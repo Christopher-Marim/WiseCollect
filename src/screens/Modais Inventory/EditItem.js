@@ -17,11 +17,9 @@ import getRealm from "../../services/realm";
 
 export default function AddList() {
   const [EdtItem, setEdtItem] = useState('');
-  const statusModal = useSelector((state) => state.showModal.showModalEDTITEM);
-  const idItem = useSelector((state) => state.collects.currentIDitem);
-  const idCollect = useSelector((state) => state.collects.currentID);
-
-
+  const statusModal = useSelector((state) => state.showModal.showModalEDTITEM_INVENTORY);
+  const idItem = useSelector((state) => state.inventorys.currentIDitem);
+  const idInventory = useSelector((state) => state.inventorys.currentID);
 
   const dispatch = useDispatch();
 
@@ -33,9 +31,9 @@ export default function AddList() {
       UpdateItem()
       closeModal()
       setEdtItem('')
-      dispatch({type: 'REFRESH', payload:[true]})
+      dispatch({type: 'REFRESH_INVENTORY', payload:[true]})
         setInterval(() => {
-          dispatch({type: 'REFRESH', payload:[false]})
+          dispatch({type: 'REFRESH_INVENTORY', payload:[false]})
          }, 1000)
 
     }
@@ -44,11 +42,11 @@ export default function AddList() {
   async function UpdateItem() {
     const realm = await getRealm();
 
-    let data = realm.objectForPrimaryKey("Collects",idCollect)
+    let data = realm.objectForPrimaryKey("Inventorys",idInventory)
     
     realm.write(() => {
       let indexItem = data.itens.findIndex(x=> x.id ==idItem)
-      data.itens[indexItem].value = EdtItem
+      data.itens[indexItem].qtd = EdtItem
     });
     dispatch({ type: "REFRESH", payload: [true] });
     setInterval(() => {
@@ -57,7 +55,7 @@ export default function AddList() {
 
   }
   function closeModal() {
-    dispatch({type: 'SHOW_MODAL_EDTITEM_OFF'});
+    dispatch({type: 'SHOW_MODAL_EDTITEM_INVENTORY_OFF'});
   }
 
   return (
@@ -76,7 +74,7 @@ export default function AddList() {
           <View style={styles.overlay} />
         </TouchableWithoutFeedback>
         <View style={styles.container}>
-          <Text style={styles.headerModal}> Editar Valor</Text>
+          <Text style={styles.headerModal}> Editar quantidade</Text>
           <TextInput
             style={styles.input}
             placeholder="Informe a Quantidade"
@@ -115,7 +113,7 @@ const styles = StyleSheet.create({
   headerModal: {
     fontFamily: commonStyles.fontFamily,
     fontWeight:commonStyles.fontWeight,
-    backgroundColor: commonStyles.color.principal,
+    backgroundColor: commonStyles.color.InventoryPrincipal,
     color: commonStyles.color.secondary,
     fontSize: 18,
     textAlign: 'center',
@@ -131,7 +129,7 @@ const styles = StyleSheet.create({
     margin: 20,
     marginRight: 30,
     fontWeight:commonStyles.fontWeight,
-    color: commonStyles.color.today,
+    color: commonStyles.color.InventoryPrincipal,
   },
   input: {
     fontFamily: commonStyles.fontFamily,

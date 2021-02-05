@@ -87,12 +87,12 @@ export default (props) => {
       >
         <View style={styles.container2}>
           <View style={styles.textCollect}>
-            <Text style={styles.nomeCollect}>{props.numberCollect}</Text>
+            <Text style={styles.nomeCollect}>{props.cod}</Text>
             <Text style={{ fontWeight: commonStyles.fontWeight }}>
-              Nr.Equipamento: {props.numberEquipament}
+              Descrição: {props.desc}
             </Text>
             <Text style={{ fontWeight: commonStyles.fontWeight }}>
-              Nr.Element: {props.element}
+              info: 
             </Text>
           </View>
         </View>
@@ -106,7 +106,7 @@ export default (props) => {
         >
           <View style={{ paddingTop: 20, paddingHorizontal: 10 }}>
             <Text style={{ fontWeight: commonStyles.fontWeight }}>
-              Valor: {props.value}
+              Qtd: {props.qtd}
             </Text>
           </View>
         </View>
@@ -122,7 +122,6 @@ const styles = StyleSheet.create({
     borderLeftWidth: 5,
     alignItems: "flex-start",
     flexWrap: "wrap",
-    paddingVertical: 10,
     paddingLeft: 15,
     borderRadius: 5,
     borderLeftColor: commonStyles.color.principal,
@@ -132,7 +131,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "flex-start",
     justifyContent: "center",
-    padding: 10,
+    paddingHorizontal: 10,
   },
   nomeCollect: {
     fontSize: 20,

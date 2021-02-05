@@ -14,7 +14,7 @@ import commonStyles from "../../commonStyles";
 
 import getRealm from "../../services/realm";
 
-export default function EllipsisItem() {
+export default function EllipsisItem({navigation}) {
   const statusModal = useSelector((state) => state.showModal.showModalELLIPSIS);
   const idInventory = useSelector((state) => state.inventorys.currentID);
 
@@ -69,7 +69,7 @@ export default function EllipsisItem() {
                   borderBottomWidth: 1,
                   borderBottomColor: "grey",
                 },
-              ]}>
+              ]} onPress={()=>{navigation.navigate('GetProducts'), closeModal()}}>
               <Text style={styles.TextButton}>Atualizar descrição</Text>
             </TouchableOpacity>
             

@@ -48,14 +48,11 @@ export default function CollectList({ navigation }) {
 
   useEffect(()=>{
     loadCollects()
-    
-console.warn(navigation.isFocused())
    
     BackHandler.addEventListener('hardwareBackPress', () => true);
   }, [])
   
   const route = useRoute();
-  console.warn(route)
   useFocusEffect(
     useCallback(() => {
       const onBackPress = () => {
