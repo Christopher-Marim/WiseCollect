@@ -1,5 +1,5 @@
-import React,{useEffect} from "react";
-import { useState } from "react";
+import React, { useState } from "react";
+
 import {
   View,
   Modal,
@@ -10,57 +10,44 @@ import {
   TouchableOpacity,
   Alert,
 } from "react-native";
-import { useDispatch, useSelector} from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import commonStyles from "../../commonStyles";
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function EditAPI() {
-  const [ApiText, setApiText] = useState("");
-  const [ValueText, setValueText] = useState(null);
+import getRealm from "../../services/realm";
+
+export default function AddList() {
+  const [InventoryName, setInventoryName] = useState("");
   const statusModal = useSelector(
-    (state) => state.showModal.showModalEDTAPI
+    (state) => state.showModal.showModalADDINVENTORY
   );
 
   const dispatch = useDispatch();
 
-  function edtAPI() {
-    if (!ApiText || !ApiText.trim()) {
-      Alert.alert("Dados Invalidos", "Descrição não Informada!");
+  async function addInventory() {
+    if (!InventoryName || !InventoryName.trim()) {
+      Alert.alert("Dados Inválidos", "Descrição não Informada!");
       return;
     } else {
-      UpdateAPI();
-      closeModal();
-    }
-  }
-  useEffect(()=>{
-    getData()
-  },[])
-  const getData = async () => {
-    try {
-      const apiText = await AsyncStorage.getItem('@API')
-     
-      if(apiText !== null) {
-        setApiText(apiText)
-      }
-    } catch(e) {
-      // error reading value
-    }
-  }
+      const realm = await getRealm();
 
-  async function UpdateAPI() {
-    try {
-      await AsyncStorage.setItem('@API', ApiText)
-    } catch (e) {
-      // saving error
+      realm.write(() => {
+        realm.create("Inventorys", {
+          id: Math.random() * 1000,
+          nome: InventoryName,
+          dateAt: new Date(),
+          itens: [],
+        });
+        setInventoryName();
+        dispatch({ type: "REFRESH_INVENTORY", payload: [true] });
+        setInterval(() => {
+          dispatch({ type: "REFRESH_INVENTORY", payload: [false] });
+        }, 1000);
+        closeModal();
+      });
     }
-
   }
   function closeModal() {
-    dispatch({ type: "SHOW_MODAL_EDTAPI_OFF" });
-    dispatch({ type: "REFRESH", payload: [true] });
-    setInterval(() => {
-      dispatch({ type: "REFRESH", payload: [false] });
-    }, 1000);
+    dispatch({ type: "SHOW_MODAL_ADDINVENTORY_OFF" });
   }
 
   return (
@@ -81,21 +68,19 @@ export default function EditAPI() {
           <View style={styles.overlay} />
         </TouchableWithoutFeedback>
         <View style={styles.container}>
-          <Text style={styles.headerModal}> Editar API</Text>
-          <Text style={styles.text}>Api</Text>
+          <Text style={styles.headerModal}>Novo Inventario</Text>
           <TextInput
             style={styles.input}
-            placeholder="Informe a BaseURL"
-            onChangeText={(text) => setApiText(text)}
-            value={ApiText}
-            autoCorrect={false}
+            placeholder="Informe a Descrição"
+            onChangeText={(text) => setInventoryName(text)}
+            value={InventoryName}
           />
 
           <View style={styles.buttons}>
             <TouchableOpacity onPress={closeModal}>
               <Text style={styles.button}>Cancelar</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={edtAPI}>
+            <TouchableOpacity onPress={addInventory}>
               <Text style={styles.button}>Salvar</Text>
             </TouchableOpacity>
           </View>
@@ -121,7 +106,7 @@ const styles = StyleSheet.create({
   headerModal: {
     fontFamily: commonStyles.fontFamily,
     fontWeight: commonStyles.fontWeight,
-    backgroundColor: commonStyles.color.principal,
+    backgroundColor: commonStyles.color.InventoryPrincipal,
     color: commonStyles.color.secondary,
     fontSize: 18,
     textAlign: "center",
@@ -129,27 +114,20 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
   },
-  text:{
-    marginTop: 10,
-    fontFamily: commonStyles.fontFamily,
-    fontWeight: commonStyles.fontWeight,
-    fontSize: 14,
-    paddingLeft:20
-  },
   buttons: {
     flexDirection: "row",
     justifyContent: "flex-end",
   },
   button: {
+    fontWeight: commonStyles.fontWeight,
     margin: 20,
     marginRight: 30,
     color: commonStyles.color.today,
-    fontWeight: commonStyles.fontWeight,
   },
   input: {
     fontFamily: commonStyles.fontFamily,
-    paddingHorizontal: 5,
     fontWeight: commonStyles.fontWeight,
+    paddingHorizontal: 5,
     height: 40,
     marginTop: 10,
     margin: 15,

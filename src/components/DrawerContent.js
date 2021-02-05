@@ -76,6 +76,17 @@ export default (props) => {
                 <DrawerItem 
                     icon={({color, size}) => (
                         <MaterialCommunityIcons 
+                        name="download-box-outline" 
+                        color={color}
+                        size={size}
+                        />
+                    )}
+                    label="Inventário"
+                    onPress={() => {props.navigation.navigate('InventoryList')}}
+                />
+                <DrawerItem 
+                    icon={({color, size}) => (
+                        <MaterialCommunityIcons 
                         name="account-outline" 
                         color={color}
                         size={size}
@@ -95,6 +106,7 @@ export default (props) => {
                     label="Bips"
                     onPress={() => {props.navigation.navigate('')}}
                 />
+                
                 <DrawerItem 
                     icon={({color, size}) => (
                         <MaterialCommunityIcons 

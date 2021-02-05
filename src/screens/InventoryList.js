@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -8,69 +8,49 @@ import {
   SafeAreaView,
   RefreshControl,
   Alert,
-  BackHandler
+  BackHandler,
+  Dimensions
 } from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { useDispatch,useSelector } from "react-redux";
-import Modal from "./Modais/AddCollect";
-import Filter from "./Modais/Filter";
-import {useRoute, useFocusEffect} from '@react-navigation/native';
-
+import Modal from "./Modais Inventory/AddInventory";
+import Filter from "./Modais Inventory/FilterInventory";
 
 import commonStyles from "../commonStyles";
-import Collect from "../components/Collect";
-import EditCollect from "../screens/Modais/EditCollect";
+import Inventory from "../components/Inventory";
+import EditInventory from "./Modais Inventory/EditInventory";
 import getRealm from '../services/realm'
 
-export default function CollectList({ navigation }) {
-  const refresh = useSelector((state) => state.collects.refresh);
+export default function InventoryList({ navigation }) {
+  const refresh = useSelector((state) => state.inventorys.refresh);
   const statusModal = useSelector(
-    (state) => state.showModal.showModalFILTERCOLLECT,
+    (state) => state.showModal.showModalFILTERINVENTORY,
   );
 
+  const [condition, setCondition] = useState(false)
   const dispatch = useDispatch();
 
-  const [collects, setCollects] = useState([]);
+  const [Inventorys, setInventorys] = useState([]);
 
   function callBackFilter(textFilter){
-    loadCollects(textFilter)
+    loadInventorys(textFilter)
     onRefresh()
   }
 
-  async function loadCollects(textFilter=''){
+  async function loadInventorys(textFilter=''){
     const realm = await getRealm();
  
-    const data = realm.objects('Collects').sorted('dateAt').filtered(`nome CONTAINS[c] "${textFilter}" `)
+    const data = realm.objects('Inventorys').sorted('dateAt').filtered(`nome CONTAINS[c] "${textFilter}" `)
     
-  setCollects(data)
+  setInventorys(data)
 }
 
 
   useEffect(()=>{
-    loadCollects()
+    loadInventorys()
     
-console.warn(navigation.isFocused())
-   
-    BackHandler.addEventListener('hardwareBackPress', () => true);
   }, [])
-  
-  const route = useRoute();
-  console.warn(route)
-  useFocusEffect(
-    useCallback(() => {
-      const onBackPress = () => {
-        if (route.name === 'CollectList') {
-          return true;
-        } else {
-          return false;
-        }
-      };
-      BackHandler.addEventListener('hardwareBackPress', onBackPress);
 
-      return () =>
-        BackHandler.removeEventListener('hardwareBackPress', onBackPress);
-    }, [route])      
-  )
   
 
   const onRefresh = () =>{
@@ -86,7 +66,7 @@ console.warn(navigation.isFocused())
 <Modal/>
 
       
-      <EditCollect/>
+      <EditInventory/>
       <View style={styles.headerView}>
       <Filter callback={callBackFilter} />
 
@@ -95,16 +75,16 @@ console.warn(navigation.isFocused())
               <FontAwesome name="bars" size={25} color="white"></FontAwesome>
             </View>
           </TouchableOpacity>
-        <Text style={styles.Text}>Unax</Text>
+        <Text style={styles.Text}>Inventory</Text>
 
           <TouchableOpacity style={styles.buttonFilter}
               onPress={() => { 
                 if (statusModal==true) {
-                  dispatch({ type: "SHOW_MODAL_FILTER_COLLECT_OFF" });
+                  dispatch({ type: "SHOW_MODAL_FILTER_INVENTORY_OFF" });
                 }
                 else{
 
-                  dispatch({ type: "SHOW_MODAL_FILTER_COLLECT_ON" });}}
+                  dispatch({ type: "SHOW_MODAL_FILTER_INVENTORY_ON" });}}
                 }
             >
               <View>
@@ -113,17 +93,17 @@ console.warn(navigation.isFocused())
             </TouchableOpacity>
            
       </View>
-      {collects.length > 0 && (
+      {Inventorys.length > 0 && (
         <View style={{ flex: 8 }}>
           <View style={styles.collectList}>
             <FlatList
-              data={collects}
+              data={Inventorys}
               numColumns={2}
               keyExtractor={(item) => `${item.id}`}
               renderItem={({ item }) => (
                 <View style={{ padding: 3, }}>
                   
-                  <Collect id ={item.id} dateAt={item.dateAt} nome={item.nome} itens={item.itens} navigation={navigation}></Collect>
+                  <Inventory id ={item.id} dateAt={item.dateAt} nome={item.nome} itens={item.itens} navigation={navigation}></Inventory>
                   
 
                 </View>
@@ -134,23 +114,23 @@ console.warn(navigation.isFocused())
           </View>
           <TouchableOpacity
             style={styles.addButton}
-            onPress={() => dispatch({ type: "SHOW_MODAL_ADDCOLLECT_ON" })}
+            onPress={() => dispatch({ type: "SHOW_MODAL_ADDINVENTORY_ON" })}
             activeOpacity={0.7}
           >
             <FontAwesome name="plus" size={20} color={commonStyles.color.secondary} />
           </TouchableOpacity>
         </View>
       )}
-      {collects.length == 0 && (
+      {Inventorys.length == 0 && (
         <View
           style={{ flex: 9, alignItems: "center", justifyContent: "center" }}
         >
           <TouchableOpacity
             style={styles.addButtonCenter}
-            onPress={() => dispatch({ type: "SHOW_MODAL_ADDCOLLECT_ON" })}
+            onPress={() => dispatch({ type: "SHOW_MODAL_ADDINVENTORY_ON" })}
             activeOpacity={0.7}
           >
-            <Text style={styles.Text}>Nova Coleta</Text>
+            <Text style={styles.Text}>Novo Inventário</Text>
           </TouchableOpacity>
         </View>
       )}
@@ -167,7 +147,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection:'row',
     paddingHorizontal:20,
-    backgroundColor: commonStyles.color.principal,
+    backgroundColor: commonStyles.color.InventoryPrincipal,
     alignItems: "center",
     justifyContent: "space-between",
   },
@@ -189,16 +169,16 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: commonStyles.color.principal,
+    backgroundColor: commonStyles.color.InventoryPrincipal,
   },
   addButtonCenter: {
     position: "absolute",
-    width: 200,
+    width: Dimensions.get("window").width/1.5,
     height: 50,
     borderRadius: 3,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: commonStyles.color.principal,
+    backgroundColor: commonStyles.color.InventoryPrincipal,
   },
   buttonOpenDrawer: {
     padding:10,

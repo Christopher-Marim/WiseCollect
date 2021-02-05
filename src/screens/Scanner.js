@@ -1,9 +1,10 @@
-import React, { useRef, useState} from 'react';
-import {Button, Text, View, Alert} from 'react-native';
+import React, { useRef, useState, useEffect} from 'react';
+import {Button, Text, View, Alert, TouchableOpacity} from 'react-native';
 import {RNCamera} from 'react-native-camera';
 import {useDispatch, useSelector} from 'react-redux';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import commonStyles from '../commonStyles';
 
-import AddItem from './Modais/AddItem'
 
 
 export default function ProductScanRNCamera (props) {
@@ -22,8 +23,7 @@ export default function ProductScanRNCamera (props) {
     setBarcode(scanResult.data)
     dispatch({type:'SET_BARCODE', payload: [JSON.parse(scanResult.data)]})
     dispatch({type:'CALLBACK_CONDITION_TRUE', payload: [true]})
-      dispatch({type:'SHOW_MODAL_ADDITEM_ON'})
-    
+    props.navigation.navigate("InventoryItemList")
   
     }
     else{
@@ -36,7 +36,19 @@ export default function ProductScanRNCamera (props) {
     return (
       
       <View style={styles.container}>
-        <AddItem navigation={props.navigation}/>
+        <View style={styles.headerView}>
+        <TouchableOpacity
+          style={{marginRight:20}}
+          onPress={() => props.navigation.goBack()}>
+          <View>
+            <FontAwesome
+              name="chevron-left"
+              size={25}
+              color="white"></FontAwesome>
+          </View>
+        </TouchableOpacity>
+        <Text style={styles.text}>Scanner</Text>
+      </View>
         <RNCamera
           ref={cameraRef}
           defaultTouchToFocus
@@ -53,9 +65,7 @@ export default function ProductScanRNCamera (props) {
           
         />
         
-        <View style={[styles.overlay, styles.topOverlay]}>
-          <Text style={styles.scanScreenMessage}>Please scan the barcode.</Text>
-        </View>
+       
         <View style={[styles.overlay, styles.bottomOverlay]}>
           <Button
             style={styles.enterBarcodeManualButton}
@@ -72,7 +82,7 @@ const styles = {
     flex: 1,
   },
   preview: {
-    flex: 1,
+    flex: 9,
     justifyContent: 'flex-end',
     alignItems: 'center',
   },
@@ -102,12 +112,24 @@ const styles = {
     backgroundColor: 'white',
     borderRadius: 40,
   },
-  scanScreenMessage: {
-    fontSize: 14,
-    color: 'white',
-    textAlign: 'center',
+  
+  headerView: {
+    flex: 1,
+    flexDirection: 'row',
+    paddingHorizontal: 20,
+    backgroundColor: 'black',
     alignItems: 'center',
-    justifyContent: 'center',
+  },
+  text: {
+    fontFamily: commonStyles.fontFamily,
+    fontWeight: commonStyles.fontWeight,
+    fontSize: 25,
+    color: commonStyles.color.secondary,
+    borderBottomWidth: 2,
+    borderBottomColor: '#FFF',
+    borderBottomLeftRadius: 5,
+    borderBottomRightRadius: 5,
   },
 };
+
 
