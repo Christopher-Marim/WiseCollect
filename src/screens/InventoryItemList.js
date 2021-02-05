@@ -15,8 +15,8 @@ import {useSelector, useDispatch} from 'react-redux';
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import commonStyles from '../commonStyles';
-import Item from '../components/Item';
-import EditItem from './Modais/EditItem';
+import Item from '../components/InventoryItem';
+import EditItem from './Modais Inventory/EditItem';
 import AddItem from './Modais/AddItem';
 import EllipsisItem from './Modais Inventory/EllipsisItem';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -28,8 +28,6 @@ export default function ItemList(props) {
   const idInventory = useSelector((state) => state.inventorys.currentID);
   const coleta = useSelector((state) => state.barcodes.barcode);
 
-  console.warn("Coleta"+ coleta)
-
   const [itens, setItens] = useState([]);
   const [auxNome, setAuxNome] = useState('');
   const [qtdProduto, setQtdProduto] = useState('');
@@ -38,7 +36,9 @@ export default function ItemList(props) {
   const dispatch = useDispatch(); 
 
   useEffect(()=>{
+
     setCodProduto(coleta?JSON.stringify(coleta).search(/[{}]/g)==-1?JSON.stringify(coleta):'':'')
+    
   },[coleta])
 
   // faz o Refresh nos Itens, para atualizar o FlatList
@@ -48,6 +48,29 @@ export default function ItemList(props) {
       dispatch({type: 'REFRESH_INVENTORY', payload: [false]});
     }, 1000);
   };
+
+  async function addToFlatList(){
+    const realm = await getRealm();
+      let data = realm.objectForPrimaryKey("Inventorys", idInventory);
+
+      realm.write(() => {
+        data.itens.push({
+          id: Math.random() * 1000,
+          cod: codProduto,
+          qtd: qtdProduto,
+          desc: codProduto,
+          value: "",
+          info1:"",
+          info2:"",
+          info3:""
+        });
+        dispatch({ type: "REFRESH_INVENTORY", payload: [true] });
+        setInterval(() => {
+          dispatch({ type: "REFRESH_INVENTORY", payload: [false] });
+        }, 1000);
+      });
+
+  }
 
   useEffect(() => {
     async function loadItens() {
@@ -64,7 +87,7 @@ export default function ItemList(props) {
   return (
     <SafeAreaView style={styles.container}>
       <EditItem />
-      <EllipsisItem />
+      <EllipsisItem navigation={props.navigation} />
       <AddItem navigation={props.navigation} />
 
       <View style={styles.headerView}>
@@ -120,7 +143,7 @@ export default function ItemList(props) {
               value={codProduto}
             />
             {qtdProduto.length > 0 && codProduto.length > 0 && (
-              <TouchableOpacity>
+              <TouchableOpacity onPress={()=>{addToFlatList()}}> 
                 <View
                   style={{
                     backgroundColor: commonStyles.color.InventoryPrincipal,
@@ -161,24 +184,16 @@ export default function ItemList(props) {
                   <View style={{padding: 3}}>
                     <Item
                       id={item.id}
-                      numberCollect={item.numberCollect}
-                      numberEquipament={item.numberEquipament}
-                      element={item.element}
-                      value={item.value}></Item>
+                      cod={item.cod}
+                      qtd={item.qtd}
+                      desc={item.desc}></Item>
                   </View>
                 )}
                 refreshControl={
                   <RefreshControl refreshing={refresh} onRefresh={onRefresh} />
                 }
               />
-              <TouchableOpacity
-                style={styles.addButton}
-                onPress={() => dispatch({type: 'SHOW_MODAL_ADDITEM_ON'})}
-                activeOpacity={0.7}>
-                <Text style={{fontSize: 45, color: 'white', marginBottom: 5}}>
-                  +
-                </Text>
-              </TouchableOpacity>
+             
             </View>
           </View>
         </View>

@@ -16,7 +16,6 @@ export default function Collect(props) {
   const [borderRadiusCONST, setborderRadius] = useState(10);  
   const [collects, setCollects] = useState([]);
   const [BaseURL, setBaseURL] = useState('');
-  const [HeaderValue, setHeaderValue] = useState('');
   const dispatch = useDispatch();
 
   const formatteddate = (collects) =>
@@ -25,12 +24,9 @@ export default function Collect(props) {
     const getData = async () => {
       try {
         const apiText = await AsyncStorage.getItem('@API')
-        const apiValue = await AsyncStorage.getItem('@Value')
        
-        if(apiText !== null && apiValue !== null) {
-          console.warn(HeaderValue)
+        if(apiText !== null ) {
           setBaseURL(apiText)
-          setHeaderValue(apiValue)
         }
       } catch(e) {
         // error reading value
@@ -38,7 +34,7 @@ export default function Collect(props) {
     }
     const api = axios.create({
       baseURL:`${BaseURL}`,
-      headers:{Authorization:`${HeaderValue}`}
+      headers:{Authorization:'Basic 1332a3be38efc622d2b7529d9f44a1fbae8236cc9f1f0f865af71c08155a'}
   })
 
   async function setApi() {
@@ -71,10 +67,7 @@ export default function Collect(props) {
 }
 
   useEffect(()=>{
-    
     getData()
-    
-
     loadCollects()
 
   }, [])

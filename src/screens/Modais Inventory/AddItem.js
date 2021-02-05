@@ -311,7 +311,7 @@ const styles = StyleSheet.create({
   headerModal: {
     fontFamily: commonStyles.fontFamily,
     fontWeight: commonStyles.fontWeight,
-    backgroundColor: commonStyles.color.principal,
+    backgroundColor: commonStyles.color.InventoryPrincipal,
     color: commonStyles.color.secondary,
     fontSize: 18,
     textAlign: "center",
