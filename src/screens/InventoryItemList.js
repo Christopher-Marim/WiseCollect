@@ -52,17 +52,26 @@ export default function ItemList(props) {
   async function addToFlatList(){
     const realm = await getRealm();
       let data = realm.objectForPrimaryKey("Inventorys", idInventory);
+      let dataStorage = realm.objects("StorageProducts");
+
+      if(codProduto.length==6){
+        var store =dataStorage?dataStorage.filtered(`cod CONTAINS[c] "${codProduto}" `):null
+      }
+      
 
       realm.write(() => {
         data.itens.push({
           id: Math.random() * 1000,
-          cod: codProduto,
+          cod: store?store[0].cod:codProduto,
           qtd: qtdProduto,
-          desc: codProduto,
+          desc: store?store[0].desc:codProduto,
           value: "",
-          info1:"",
-          info2:"",
-          info3:""
+          info1:store?store[0].info1:"",
+          info2:store?store[0].info2:"",
+          info3:store?store[0].info3:"",
+          info4:store?store[0].info4:"",
+          system_user_id:store?store[0].system_user_id:"",
+          system_unit_id:store?store[0].system_unit_id:"",
         });
         dispatch({ type: "REFRESH_INVENTORY", payload: [true] });
         setInterval(() => {
@@ -186,7 +195,12 @@ export default function ItemList(props) {
                       id={item.id}
                       cod={item.cod}
                       qtd={item.qtd}
-                      desc={item.desc}></Item>
+                      desc={item.desc}
+                      info1={item.info1}
+                      info2={item.info2}
+                      info3={item.info3} 
+                      info4={item.info4} 
+                      ></Item>
                   </View>
                 )}
                 refreshControl={

@@ -3,25 +3,24 @@ import {
   View,
   Text,
   StyleSheet,
-  FlatList,
   TouchableOpacity,
   SafeAreaView,
-  RefreshControl,
   Alert,
-  BackHandler,
   Dimensions,
   Vibration
 } from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
-import { useDispatch,useSelector } from "react-redux";
 
 import commonStyles from "../commonStyles";
 import getRealm from '../services/realm'
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Loader from '../components/Loader'
 import axios from 'axios'
 
 export default function GetProducts({ navigation }) {
   const [BaseURL, setBaseURL] = useState('');
+  const [LoaderVisible, setVisible] = useState(false);
+  const [LengthProducts, setLengthProducts] = useState(0);
 
 
   useEffect(()=>{
@@ -30,9 +29,12 @@ export default function GetProducts({ navigation }) {
 
   const getData = async () => {
     try {
-      console.log("Dale")
+      const realm = await getRealm();
+      let dataStorage = realm.objects("StorageProducts");
+      setLengthProducts(dataStorage.length)
+
       const apiText = await AsyncStorage.getItem('@API')
-     
+
       if(apiText !== null ) {
         setBaseURL(apiText)
       }
@@ -40,6 +42,7 @@ export default function GetProducts({ navigation }) {
       console.error(e)
     }
   }
+  
   const api = axios.create({
     baseURL:`${BaseURL}`,
     headers:{Authorization:'Basic 1332a3be38efc622d2b7529d9f44a1fbae8236cc9f1f0f865af71c08155a'}
@@ -50,38 +53,49 @@ async function getApi() {
 
     let arr= []
 
-    for (let index = 1; index < 1000; index++) {
+    for (let index = 1; index < 51; index++) {
       let response = await api.get(`/produto/${index}`)
       arr.push(response.data);
       
     }
     
-    console.log(arr[756])
+    setLengthProducts(arr.length)
 
     const realm = await getRealm();
 
+    realm.write(()=>{
+      for (let index = 0; index < arr.length; index++) {
+        
+        realm.create("StorageProducts",{
+          id: parseInt(arr[index].data.id,10),
+          cod:  arr[index].data.codProduto ,
+          desc: arr[index].data.descricaoProduto,
+          info1:arr[index].data.informacao01,
+          info2:arr[index].data.informacao02,
+          info3:arr[index].data.informacao03,
+          info4:arr[index].data.informacao04,
+          system_user_id:arr[index].data.system_user_id,
+          system_unit_id:arr[index].data.system_unit_id,
+        })
+        
+      }
+    })
 
     
       Vibration.vibrate(200)
-    
+      setVisible(false)
     Alert.alert("Lote Recebido", `Lote recebido com sucesso`);
   } catch (error) {
     console.log("deu erro " + error);
+    setVisible(false)
     Alert.alert("Recebimento não concluido",`Verificar informações da Api em configurações ou conexão com a internet`)
   }
 }
  
-  
-
-  const onRefresh = () =>{
-    dispatch({type: 'REFRESH', payload:[true]})
-        setInterval(() => {
-          dispatch({type: 'REFRESH', payload:[false]})
-         }, 1000)
-  }
 
   return (
     <SafeAreaView style={styles.container}>
+      <Loader visible={LoaderVisible}/>
       <View style={styles.headerView}>
 
         <TouchableOpacity style={styles.buttonOpenDrawer} onPress={()=>{navigation.goBack()}}>
@@ -94,8 +108,8 @@ async function getApi() {
       </View>
       <View style={{flex:8, alignItems:'center',justifyContent:'flex-start'}}>
         <View style={{alignItems:'center', paddingTop:50}}>
-        <Text style={styles.TextInformation}>{`Produtos carregados:`}</Text>
-        <TouchableOpacity style={styles.Button} onPress={()=>{getApi()}}>
+        <Text style={styles.TextInformation}>{`Produtos carregados:${LengthProducts}`}</Text>
+        <TouchableOpacity style={styles.Button} onPress={()=>{getApi(), setVisible(true)}}>
           <Text style={styles.TextButton}>Baixar</Text>
         </TouchableOpacity>
         </View>
