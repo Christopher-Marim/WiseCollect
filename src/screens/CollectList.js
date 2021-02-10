@@ -92,7 +92,7 @@ export default function CollectList({ navigation }) {
               <FontAwesome name="bars" size={25} color="white"></FontAwesome>
             </View>
           </TouchableOpacity>
-        <Text style={styles.Text}>Unax</Text>
+        <Text style={styles.Text}>ETM</Text>
 
           <TouchableOpacity style={styles.buttonFilter}
               onPress={() => { 

@@ -91,9 +91,27 @@ export default (props) => {
             <Text style={{ fontWeight: commonStyles.fontWeight }}>
               Descrição: {props.desc}
             </Text>
+            
+            {props.info1.length>1&&(
             <Text style={{ fontWeight: commonStyles.fontWeight }}>
-              info: 
+              {props.info1}
             </Text>
+            )}
+            {props.info2.length>1&&(
+            <Text style={{ fontWeight: commonStyles.fontWeight }}>
+              {props.info2}
+            </Text>
+            )}
+            {props.info3.length>1&&(
+            <Text style={{ fontWeight: commonStyles.fontWeight }}>
+              {props.info3}
+            </Text>
+            )}
+            {props.info4.length>1&&(
+            <Text style={{ fontWeight: commonStyles.fontWeight }}>
+              {props.info4}
+            </Text>
+            )}
           </View>
         </View>
 

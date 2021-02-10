@@ -61,8 +61,8 @@ export default function Login({navigation}) {
     }
   }
 
-   function acessar() {
-    setCondition(true)
+  function acessar() {
+    setCondition(true);
     getUsuario();
   }
   async function clearStore() {
@@ -83,7 +83,7 @@ export default function Login({navigation}) {
 
         const realm = await getRealm();
         const store = realm.objects('User');
-        console.log("1 Store"+store[0]);
+        console.log('1 Store' + store[0]);
 
         if (store[0] != undefined) {
           //Logado
@@ -94,7 +94,7 @@ export default function Login({navigation}) {
                 x.senha == store[0].senha &&
                 x.chave == store[0].token,
             );
-            console.log("FILTER 1 : "+data[index])
+            console.log('FILTER 1 : ' + data[index]);
 
             if (data[index]) {
               navigation.replace('CollectList');
@@ -103,39 +103,39 @@ export default function Login({navigation}) {
             }
           } //Deslogado
           else {
-            const index = data.findIndex(
-              (x) => x.email == email && x.senha == senha
-            );
-            console.log("FILTER 2 : "+data[index])
-            if (data[index]) {
-              clearStore();
-              setUser(data[index]);
-              navigation.replace('CollectList');
-            } else {
+            try {
+              const index = data.findIndex(
+                (x) => x.email == email && x.senha == senha,
+              );
+              console.log('FILTER 2 : ' + data[index]);
+             
+                clearStore();
+                setUser(data[index]);
+                navigation.replace('CollectList');
+              
+            } catch (error) {
               Alert.alert(
                 'Email e Senha incorretos',
                 'Verifique o email e senha digitados',
               );
             }
+             
           }
         } //Sem Storage
         else {
+          try {
+            const index = data.findIndex(
+              (x) => x.email == email && x.senha == senha,
+            );
+            console.log('FILTER INTERNET DESLOGADO : ' + data[index].email);
 
-          const index = data.findIndex(
-            (x) => ((x.email == email) && (x.senha == senha))
-          );
-          console.log("FILTER INTERNET DESLOGADO : "+data[index].email)
-          
-          if (data[index]) {
             setUser(data[index]);
-          } else {
+          } catch (error) {
             Alert.alert(
               'Email e Senha incorretos',
               'Verifique o email e senha digitados',
             );
-            
           }
-        
         }
       } else {
         const realm = await getRealm();
@@ -143,12 +143,16 @@ export default function Login({navigation}) {
         if (store[0].logado == true) {
           navigation.replace('CollectList');
         } else {
-          if(Condition==true){
+          if (Condition == true) {
             if (store[0].email == email && store[0].senha == senha) {
               const realm = await getRealm();
-  
+
               realm.write(() => {
-                realm.create('User', {id: store[0].id, logado: true}, 'modified');
+                realm.create(
+                  'User',
+                  {id: store[0].id, logado: true},
+                  'modified',
+                );
               });
               navigation.repalce('CollectList');
             } else {
@@ -172,7 +176,7 @@ export default function Login({navigation}) {
 
       realm.write(() => {
         realm.create('User', {
-          id:  parseInt(usuario.id),
+          id: parseInt(usuario.id),
           nome: usuario.nomeUsuario,
           email: usuario.email,
           senha: usuario.senha,
@@ -193,7 +197,6 @@ export default function Login({navigation}) {
       setSenha('');
     }
     navigation.replace('CollectList');
-
   }
 
   return (
