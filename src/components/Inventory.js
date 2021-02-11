@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Alert, Vibration } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Alert, Vibration, Dimensions } from "react-native";
 import moment from "moment";
 import "moment/locale/pt-br";
 import {useDispatch } from "react-redux";
@@ -191,10 +191,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexWrap: "wrap",
     paddingVertical: 10,
-    width: 190,
+    width:Dimensions.get("window").width/2.1,
     borderRadius: 5,
     borderLeftColor: commonStyles.color.InventoryPrincipal,
     backgroundColor: "white",
+    
   },
   textCollect: {
     flex: 1,

@@ -137,9 +137,10 @@ export default function ItemList(props) {
               setQtdProduto(text);
             }}
             value={qtdProduto}
+            keyboardType='numeric'
           />
         </View>
-        <View>
+        <View >
           <Text style={styles.textBusca}>Código do produto</Text>
           <View style={{flexDirection: 'row'}}>
             <TextInput
@@ -149,6 +150,11 @@ export default function ItemList(props) {
                 setCodProduto(text);
               }}
               value={codProduto}
+              
+              keyboardType='numeric'
+            
+
+              
             />
             {qtdProduto.length > 0 && codProduto.length > 0 && (
               <TouchableOpacity
@@ -311,13 +317,13 @@ const styles = StyleSheet.create({
   },
   textInputQtd: {
     backgroundColor: 'white',
-    width: 50,
+    width: 40,
     borderRadius: 5,
   },
   textInputCod: {
     borderRadius: 5,
     backgroundColor: 'white',
-    width: Dimensions.get('window').width / 1.5,
+    width: "77%",
     marginRight: 15,
   },
   containerAdd: {

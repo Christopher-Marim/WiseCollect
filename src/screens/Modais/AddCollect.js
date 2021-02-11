@@ -69,12 +69,19 @@ export default function AddList() {
         </TouchableWithoutFeedback>
         <View style={styles.container}>
           <Text style={styles.headerModal}>Nova Coleta</Text>
+          <View>
           <TextInput
             style={styles.input}
             placeholder="Informe a Descrição"
             onChangeText={(text) => setCollectName(text)}
             value={collectName}
+            maxLength={20}
           />
+          <View style={{position:"absolute",right:20,top:50 }}>
+          <Text style={{color:"grey"}}>{`${collectName?collectName.length:0}/20`}</Text>
+          </View>
+
+          </View>
 
           <View style={styles.buttons}>
             <TouchableOpacity onPress={closeModal}>
