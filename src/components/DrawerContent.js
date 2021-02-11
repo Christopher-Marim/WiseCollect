@@ -1,15 +1,11 @@
 import React,{useEffect, useState} from "react";
-import { View,  StyleSheet } from "react-native";
+import { View,  StyleSheet, Linking } from "react-native";
 import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
 import {
   Avatar,
   Title,
   Caption,
-  Paragraph,
-  Drawer,
-  Text,
-  TouchableRipple,
-  Switch,
+  Drawer
 } from "react-native-paper";
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import commonStyles from '../commonStyles'
@@ -95,7 +91,7 @@ export default (props) => {
                     label="Perfil"
                     onPress={() => {props.navigation.navigate('Profile')}}
                 />
-                <DrawerItem 
+                {/*<DrawerItem 
                     icon={({color, size}) => (
                         <MaterialCommunityIcons 
                         name="send" 
@@ -105,7 +101,7 @@ export default (props) => {
                     )}
                     label="Bips"
                     onPress={() => {props.navigation.navigate('')}}
-                />
+                    />*/}
                 
                 <DrawerItem 
                     icon={({color, size}) => (
@@ -126,8 +122,8 @@ export default (props) => {
                         size={size}
                         />
                     )}
-                    label="Support"
-                    onPress={() => {}}
+                    label="Suporte ETM"
+                    onPress={() => {Linking.openURL('https://www.etm.srv.br') }}
                 />
             </Drawer.Section>
            

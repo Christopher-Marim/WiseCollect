@@ -6,19 +6,19 @@ export default function Loader(props) {
     return (
       <AnimatedLoader
         visible={props.visible}
-        overlayColor="rgba(255,255,255,0.75)"
+        overlayColor="rgba(255,255,255,0.5)"
         source={require("../../assets/5350-loading-12.json")}
         animationStyle={styles.lottie}
         speed={1}
       >
-        <Text>Carregando...</Text>
+        <Text style={{fontSize:20}}>Carregando...</Text>
       </AnimatedLoader>
     );
 }
 
 const styles = StyleSheet.create({
   lottie: {
-    width: 200,
-    height: 200
+    width: 300,
+    height: 300
   }
 });

@@ -83,7 +83,7 @@ export default function AddList({ navigation }) {
       !Value ||
       !Value.trim()
     ) {
-      Alert.alert("Dados Inválidos", "Quantidade não Informada!");
+      Alert.alert("Dados Inválidos", "Verifique se todas os campos foram devidamente preenchidos.");
     } else {
       const realm = await getRealm();
       let data = realm.objectForPrimaryKey("Collects", idCollect);
@@ -301,7 +301,7 @@ export default function AddList({ navigation }) {
 const styles = StyleSheet.create({
   overlay: {
     width: "100%",
-    flex: 2,
+    flex: 4,
   },
   container: {
     borderRadius: 10,
