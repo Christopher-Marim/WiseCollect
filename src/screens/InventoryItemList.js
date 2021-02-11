@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
   RefreshControl,
   SafeAreaView,
-  ScrollView,
   TextInput,
   Dimensions,
 } from 'react-native';
@@ -33,13 +32,13 @@ export default function ItemList(props) {
   const [qtdProduto, setQtdProduto] = useState('');
   const [codProduto, setCodProduto] = useState(coleta?JSON.stringify(coleta).search(/[{}]/g)==-1?JSON.stringify(coleta):'':'');
 
-  const dispatch = useDispatch(); 
+  const dispatch = useDispatch();
 
-  useEffect(()=>{
-
-    setCodProduto(coleta?JSON.stringify(coleta).search(/[{}]/g)==-1?JSON.stringify(coleta):'':'')
-    
-  },[coleta])
+  useEffect(() => {
+    setCodProduto(
+      coleta?JSON.stringify(coleta).search(/[{}]/g) == -1?JSON.stringify(coleta): '': '',
+    );
+  }, [coleta]);
 
   // faz o Refresh nos Itens, para atualizar o FlatList
   const onRefresh = () => {
@@ -49,36 +48,36 @@ export default function ItemList(props) {
     }, 1000);
   };
 
-  async function addToFlatList(){
+  async function addToFlatList() {
     const realm = await getRealm();
-      let data = realm.objectForPrimaryKey("Inventorys", idInventory);
-      let dataStorage = realm.objects("StorageProducts");
+    let data = realm.objectForPrimaryKey('Inventorys', idInventory);
+    let dataStorage = realm.objects('StorageProducts');
 
-      if(codProduto.length==6){
-        var store =dataStorage?dataStorage.filtered(`cod CONTAINS[c] "${codProduto}" `):null
-      }
-      
+    console.log(dataStorage.filtered(`cod == "${codProduto}" `));
 
-      realm.write(() => {
-        data.itens.push({
-          id: Math.random() * 1000,
-          cod: store?store[0].cod:codProduto,
-          qtd: qtdProduto,
-          desc: store?store[0].desc:codProduto,
-          value: "",
-          info1:store?store[0].info1:"",
-          info2:store?store[0].info2:"",
-          info3:store?store[0].info3:"",
-          info4:store?store[0].info4:"",
-          system_user_id:store?store[0].system_user_id:"",
-          system_unit_id:store?store[0].system_unit_id:"",
-        });
-        dispatch({ type: "REFRESH_INVENTORY", payload: [true] });
-        setInterval(() => {
-          dispatch({ type: "REFRESH_INVENTORY", payload: [false] });
-        }, 1000);
+    if (dataStorage.filtered(`cod == "${codProduto}" `).length !== 0) {
+      var store = dataStorage.filtered(`cod == "${codProduto}" `);
+    }
+
+    realm.write(() => {
+      data.itens.push({
+        id: Math.random() * 1000,
+        cod: store ? store[0].cod : codProduto,
+        qtd: qtdProduto,
+        desc: store ? store[0].desc : codProduto,
+        value: '',
+        info1: store ? store[0].info1 : '',
+        info2: store ? store[0].info2 : '',
+        info3: store ? store[0].info3 : '',
+        info4: store ? store[0].info4 : '',
+        system_user_id: store ? store[0].system_user_id : '',
+        system_unit_id: store ? store[0].system_unit_id : '',
       });
-
+      dispatch({type: 'REFRESH_INVENTORY', payload: [true]});
+      setInterval(() => {
+        dispatch({type: 'REFRESH_INVENTORY', payload: [false]});
+      }, 1000);
+    });
   }
 
   useEffect(() => {
@@ -152,7 +151,10 @@ export default function ItemList(props) {
               value={codProduto}
             />
             {qtdProduto.length > 0 && codProduto.length > 0 && (
-              <TouchableOpacity onPress={()=>{addToFlatList()}}> 
+              <TouchableOpacity
+                onPress={() => {
+                  addToFlatList();
+                }}>
                 <View
                   style={{
                     backgroundColor: commonStyles.color.InventoryPrincipal,
@@ -170,8 +172,11 @@ export default function ItemList(props) {
               </TouchableOpacity>
             )}
             {(qtdProduto.length == 0 || codProduto.length == 0) && (
-              <TouchableOpacity onPress={()=>{props.navigation.navigate("Scanner"), dispatch({ type: "SET_BARCODE", payload: [{}] });
-            }}>
+              <TouchableOpacity
+                onPress={() => {
+                  props.navigation.navigate('Scanner'),
+                    dispatch({type: 'SET_BARCODE', payload: [{}]});
+                }}>
                 <MaterialCommunityIcons
                   name="qrcode-scan"
                   size={45}
@@ -184,7 +189,7 @@ export default function ItemList(props) {
       </View>
       {itens.length > 0 && (
         <View style={{flex: 9}}>
-          <View style={{flex: 1}}>
+          <View style={{flex: 9}}>
             <View style={styles.itemList}>
               <FlatList
                 data={itens}
@@ -198,26 +203,40 @@ export default function ItemList(props) {
                       desc={item.desc}
                       info1={item.info1}
                       info2={item.info2}
-                      info3={item.info3} 
-                      info4={item.info4} 
-                      ></Item>
+                      info3={item.info3}
+                      info4={item.info4}></Item>
                   </View>
                 )}
                 refreshControl={
                   <RefreshControl refreshing={refresh} onRefresh={onRefresh} />
                 }
               />
-             
             </View>
+          </View>
+          <View
+            style={{
+              backgroundColor: '#cdc8cf',
+              height: 40,
+              justifyContent: 'center',
+            }}>
+            <Text
+              style={{
+                marginLeft: 10,
+                fontSize: 15,
+                fontFamily: commonStyles.fontFamily,
+                fontWeight: commonStyles.fontWeight,
+              }}>{`Total de itens: ${itens.length} `}</Text>
           </View>
         </View>
       )}
       {itens.length == 0 && (
         <View style={{flex: 9, justifyContent: 'center', alignItems: 'center'}}>
           <View
-            style={{flex: 8, justifyContent: 'center', alignItems: 'center'}}>
-            
-          </View>
+            style={{
+              flex: 8,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}></View>
         </View>
       )}
     </SafeAreaView>

@@ -12,6 +12,7 @@ import {
   Platform,
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
+import Loader from '../../components/Loader'
 import getRealm from '../../services/realm';
 import api from '../../services/api';
 import NetInfo from '@react-native-community/netinfo';
@@ -24,6 +25,7 @@ export default function Login({navigation}) {
   const [internet, setInternet] = useState(null);
   const [offset] = useState(new Animated.ValueXY({x: 0, y: 80}));
   const [opacity] = useState(new Animated.Value(0));
+  const [LoaderVisible, setVisible] = useState(false);
 
   const dispatch = useDispatch();
   //ao iniciar a aplicação fará a validação se a chave registrada no storage é igual a do banco de dados, caso seja entrará na
@@ -108,12 +110,12 @@ export default function Login({navigation}) {
                 (x) => x.email == email && x.senha == senha,
               );
               console.log('FILTER 2 : ' + data[index]);
-             
+              
                 clearStore();
                 setUser(data[index]);
-                navigation.replace('CollectList');
-              
+                setVisible(false)
             } catch (error) {
+              setVisible(false)
               Alert.alert(
                 'Email e Senha incorretos',
                 'Verifique o email e senha digitados',
@@ -131,6 +133,7 @@ export default function Login({navigation}) {
 
             setUser(data[index]);
           } catch (error) {
+            setVisible(false)
             Alert.alert(
               'Email e Senha incorretos',
               'Verifique o email e senha digitados',
@@ -154,6 +157,7 @@ export default function Login({navigation}) {
                   'modified',
                 );
               });
+              setVisible(false)
               navigation.repalce('CollectList');
             } else {
               Alert.alert(
@@ -196,11 +200,13 @@ export default function Login({navigation}) {
       setEmail('');
       setSenha('');
     }
+    setVisible(false)
     navigation.replace('CollectList');
   }
 
   return (
     <KeyboardAvoidingView style={styles.background}>
+      <Loader visible={LoaderVisible}></Loader>
       <View style={styles.containerLogo}>
         <Image
           style={{
@@ -236,7 +242,8 @@ export default function Login({navigation}) {
           secureTextEntry={true}
         />
 
-        <TouchableOpacity style={styles.btnSubmit} onPress={() => acessar()}>
+        <TouchableOpacity style={styles.btnSubmit} onPress={() => {acessar(), setVisible(true)}
+  }>
           <Text style={styles.submitText}>Acessar</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.btnSolicit}>

@@ -8,7 +8,8 @@ import {
   RefreshControl,
   SafeAreaView,
   ScrollView,
-  TextInput
+  TextInput,
+  Dimensions
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 
@@ -80,7 +81,7 @@ export default function ItemList(props) {
       </View>
       {itens.length > 0 && (
         <View style={{ flex: 9 }}>
-          <View style={{ flex: 1 }}>
+          <View style={{ flex: 9 }}>
             <View style={styles.itemList}>
               
               <FlatList
@@ -105,6 +106,9 @@ export default function ItemList(props) {
             </TouchableOpacity>
             </View>
             
+          </View>
+          <View style={{backgroundColor:"#c8c9cf", height:40, justifyContent:'center'}}>
+                <Text style={{marginLeft:10, fontSize:15, fontFamily:commonStyles.fontFamily, fontWeight:commonStyles.fontWeight}}>{`Total de itens: ${itens.length} `}</Text>
           </View>
         </View>
       )}
@@ -170,7 +174,7 @@ const styles = StyleSheet.create({
   addButton: {
     position: "absolute",
     right: 30,
-    bottom: 80,
+    bottom: 30,
     width: 50,
     height: 50,
     borderRadius: 25,

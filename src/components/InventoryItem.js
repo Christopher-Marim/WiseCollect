@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     paddingLeft: 15,
     borderRadius: 5,
-    borderLeftColor: commonStyles.color.principal,
+    borderLeftColor: commonStyles.color.InventoryPrincipal,
     backgroundColor: "white",
   },
   textCollect: {
