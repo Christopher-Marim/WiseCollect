@@ -51,32 +51,27 @@ export default function GetProducts({ navigation }) {
 async function getApi() {
   try {
 
-    let arr= []
-
-    for (let index = 1; index < 51; index++) {
-      let response = await api.get(`/produto/${index}`)
-      arr.push(response.data);
-      
-    }
+      let response = await api.get(`/produto?limit=1000&order=codProduto`)
     
-    setLengthProducts(arr.length)
+    console.log(response.data.data[1].codProduto)
+    setLengthProducts(1000)
 
     const realm = await getRealm();
 
     realm.write(()=>{
-      for (let index = 0; index < arr.length; index++) {
+      for (let index = 0; index < 1000; index++) {
         
         realm.create("StorageProducts",{
-          id: parseInt(arr[index].data.id,10),
-          cod:  arr[index].data.codProduto ,
-          desc: arr[index].data.descricaoProduto,
-          info1:arr[index].data.informacao01,
-          info2:arr[index].data.informacao02,
-          info3:arr[index].data.informacao03,
-          info4:arr[index].data.informacao04,
-          system_user_id:arr[index].data.system_user_id,
-          system_unit_id:arr[index].data.system_unit_id,
-        })
+          id: parseInt(response.data.data[index].id,10),
+          cod:  response.data.data[index].codProduto.trim() ,
+          desc: response.data.data[index].descricaoProduto,
+          info1:response.data.data[index].informacao01,
+          info2:response.data.data[index].informacao02,
+          info3:response.data.data[index].informacao03,
+          info4:response.data.data[index].informacao04,
+          system_user_id:response.data.data[index].system_user_id,
+          system_unit_id:response.data.data[index].system_unit_id,
+        },"modified")
         
       }
     })
