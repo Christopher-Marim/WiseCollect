@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Alert, Vibration, Dimensions } from "react-native";
 import moment from "moment";
 import "moment/locale/pt-br";
-import {useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import Swipeable from "react-native-gesture-handler/Swipeable";
 import commonStyles from "../commonStyles";
 import Icon from "react-native-vector-icons/FontAwesome";
@@ -13,28 +13,28 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import getRealm from "../services/realm";
 
 export default function Inventory(props) {
-  const [borderRadiusCONST, setborderRadius] = useState(10);  
+  const [borderRadiusCONST, setborderRadius] = useState(10);
   const [Inventorys, setInventorys] = useState([]);
   const [BaseURL, setBaseURL] = useState('');
   const dispatch = useDispatch();
 
   const formatteddate = (Inventorys) =>
     moment(Inventorys.dateAt).locale("pt-br").format("D/MM/YYYY");
-    
-    const getData = async () => {
-      try {
-        const apiText = await AsyncStorage.getItem('@API')
-        
-        if(apiText !== null) {
-          setBaseURL(apiText)
-        }
-      } catch(e) {
-        // error reading value
+
+  const getData = async () => {
+    try {
+      const apiText = await AsyncStorage.getItem('@API')
+
+      if (apiText !== null) {
+        setBaseURL(apiText)
       }
+    } catch (e) {
+      // error reading value
     }
-    const api = axios.create({
-      baseURL:`${BaseURL}`,
-      headers:{Authorization:'Basic 1332a3be38efc622d2b7529d9f44a1fbae8236cc9f1f0f865af71c08155a'}
+  }
+  const api = axios.create({
+    baseURL: `${BaseURL}`,
+    headers: { Authorization: 'Basic 1332a3be38efc622d2b7529d9f44a1fbae8236cc9f1f0f865af71c08155a' }
   })
 
   async function setApi() {
@@ -49,27 +49,27 @@ export default function Inventory(props) {
           });
         }
       );
-      
-        Vibration.vibrate(200)
+
+      Vibration.vibrate(200)
       console.log(response.data);
       DelInventory()
       Alert.alert("Lote Enviado", `Lote ${props.nome} enviado com sucesso`);
     } catch (error) {
       console.log("deu erro " + error);
-      Alert.alert("Post não concluido",`Verificar informações da Api em configurações`)
+      Alert.alert("Post não concluido", `Verificar informações da Api em configurações`)
     }
   }
-  async function loadInventorys(){
+  async function loadInventorys() {
     const realm = await getRealm();
     let idInventory = props.id;
-    let data = realm.objectForPrimaryKey("Inventorys",idInventory)
-  setInventorys(data)
-}
+    let data = realm.objectForPrimaryKey("Inventorys", idInventory)
+    setInventorys(data)
+  }
 
-  useEffect(()=>{
-    
+  useEffect(() => {
+
     getData()
-    
+
 
     loadInventorys()
 
@@ -82,7 +82,7 @@ export default function Inventory(props) {
           style={styles.left1}
           activeOpacity={0.5}
           onPress={() => {
-            setApi();
+            //setApi();
           }}
         >
           <Icon name="send" size={20} color="white" />
@@ -102,27 +102,24 @@ export default function Inventory(props) {
     );
   };
 
-  function refresh(){
+  function refresh() {
     dispatch({ type: "REFRESH_INVENTORY", payload: [true] });
     setInterval(() => {
       dispatch({ type: "REFRESH_INVENTORY", payload: [false] });
     }, 1000);
   }
-  
+
   async function DelInventory() {
     const realm = await getRealm();
     let idInventory = props.id;
-    let object = realm.objectForPrimaryKey("Inventorys",idInventory)
+    let object = realm.objectForPrimaryKey("Inventorys", idInventory)
 
     realm.write(() => {
       realm.delete(object);
     });
     refresh()
-    
+
   }
-  
-
-
 
   const getRightContent = () => {
     return (
@@ -191,11 +188,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexWrap: "wrap",
     paddingVertical: 10,
-    width:Dimensions.get("window").width/2.1,
+    width: Dimensions.get("window").width / 2.1,
     borderRadius: 5,
     borderLeftColor: commonStyles.color.InventoryPrincipal,
     backgroundColor: "white",
-    
+
   },
   textCollect: {
     flex: 1,

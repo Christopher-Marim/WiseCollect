@@ -54,10 +54,10 @@ export default function GetProducts({ navigation }) {
       const realm = await getRealm();
       let dataStorageProducts = realm.objects('StorageProducts');
       setLengthProducts(dataStorageProducts.length)
-    
+
       realm.write(() => {
 
-        response.data.data.forEach((element) => { 
+        response.data.data.forEach((element) => {
 
           realm.create("StorageProducts", {
             id: parseInt(element.id, 10),
@@ -70,7 +70,7 @@ export default function GetProducts({ navigation }) {
             system_user_id: element.system_user_id,
             system_unit_id: element.system_unit_id,
           }, "modified")
-          
+
         });
 
       })
@@ -80,18 +80,19 @@ export default function GetProducts({ navigation }) {
     }
   }
 
+ 
+
   async function getProductsAPI() {
     try {
       Offset = 1
       let response = await api.get(`/produto?limit=1000&order=codProduto&offset=${Offset}`)
 
-      let resultado =  response.data.data
-      
-     while (resultado.length != 0) {
+      let resultado = response.data.data
+
+      while (resultado.length != 0) {
         saveProductsStorage(response)
-        Offset+=1000
-        response = await api.get(`/produto?limit=1000&order=codProduto&offset=${Offset}`)
-        
+        Offset += 1000
+        response = await api.get(`/produto?limit=1000&order=codProduto&offset=${Offset}`).finally(()=>{setVisible(false)})
       }
       setVisible(false)
 
@@ -119,7 +120,7 @@ export default function GetProducts({ navigation }) {
       <View style={{ flex: 8, alignItems: 'center', justifyContent: 'flex-start' }}>
         <View style={{ alignItems: 'center', paddingTop: 50 }}>
           <Text style={styles.TextInformation}>{`Produtos carregados:${LengthProducts}`}</Text>
-          <TouchableOpacity style={styles.Button} onPress={() => { getProductsAPI(), setVisible(true)}}>
+          <TouchableOpacity style={styles.Button} onPress={() => { getProductsAPI(), setVisible(true) }}>
             <Text style={styles.TextButton}>Baixar</Text>
           </TouchableOpacity>
         </View>

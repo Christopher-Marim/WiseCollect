@@ -29,7 +29,7 @@ export default function ItemList(props) {
 
   const [itens, setItens] = useState([]);
   const [auxNome, setAuxNome] = useState('');
-  const [qtdProduto, setQtdProduto] = useState('');
+  const [qtdProduto, setQtdProduto] = useState("1");
   const [codProduto, setCodProduto] = useState(coleta ? JSON.stringify(coleta).search(/[{}]/g) == -1 ? JSON.stringify(coleta) : '' : '');
 
   const dispatch = useDispatch();
@@ -83,6 +83,30 @@ export default function ItemList(props) {
     setQtdProduto("1")
   }
 
+  async function attListInventorys() {
+    const realm = await getRealm();
+    let dataInventorys = realm.objects('ItensInventory');
+    let dataStorageProducts = realm.objects('StorageProducts');
+
+    dataInventorys.forEach((element, index) => {
+      if (dataStorageProducts.filtered(`cod == "${element.cod}" `).length !== 0) {
+        var store = dataStorageProducts.filtered(`cod == "${element.cod}" `);
+
+        realm.write(() => {
+          realm.create("ItensInventory",{  
+            id: element.id,
+            desc: store ? store[0].desc : element.desc,        
+            info1: store ? store[0].info1 : '',
+            info2: store ? store[0].info2 : '',
+            info3: store ? store[0].info3 : '',
+            info4: store ? store[0].info4 : '',
+          },'modified');
+      })
+      AtualizarLista()
+      }
+    })
+}
+
   useEffect(() => {
     async function loadItens() {
       const realm = await getRealm();
@@ -93,6 +117,7 @@ export default function ItemList(props) {
       setItens(data.itens);
     }
     loadItens();
+    attListInventorys()
   }, []);
 
   return (
