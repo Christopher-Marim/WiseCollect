@@ -12,7 +12,7 @@ import {
   Platform,
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
-import Loader from '../../components/Loader'
+import Loader from '../../components/Loader';
 import getRealm from '../../services/realm';
 import api from '../../services/api';
 import NetInfo from '@react-native-community/netinfo';
@@ -110,18 +110,17 @@ export default function Login({navigation}) {
                 (x) => x.email == email && x.senha == senha,
               );
               console.log('FILTER 2 : ' + data[index]);
-              
-                clearStore();
-                setUser(data[index]);
-                setVisible(false)
+
+              clearStore();
+              setUser(data[index]);
+              setVisible(false);
             } catch (error) {
-              setVisible(false)
+              setVisible(false);
               Alert.alert(
                 'Email e Senha incorretos',
                 'Verifique o email e senha digitados',
               );
             }
-             
           }
         } //Sem Storage
         else {
@@ -133,7 +132,7 @@ export default function Login({navigation}) {
 
             setUser(data[index]);
           } catch (error) {
-            setVisible(false)
+            setVisible(false);
             Alert.alert(
               'Email e Senha incorretos',
               'Verifique o email e senha digitados',
@@ -157,7 +156,7 @@ export default function Login({navigation}) {
                   'modified',
                 );
               });
-              setVisible(false)
+              setVisible(false);
               navigation.repalce('CollectList');
             } else {
               Alert.alert(
@@ -200,7 +199,7 @@ export default function Login({navigation}) {
       setEmail('');
       setSenha('');
     }
-    setVisible(false)
+    setVisible(false);
     navigation.replace('CollectList');
   }
 
@@ -242,8 +241,11 @@ export default function Login({navigation}) {
           secureTextEntry={true}
         />
 
-        <TouchableOpacity style={styles.btnSubmit} onPress={() => {acessar(), setVisible(true)}
-  }>
+        <TouchableOpacity
+          style={styles.btnSubmit}
+          onPress={() => {
+            acessar(), setVisible(true);
+          }}>
           <Text style={styles.submitText}>Acessar</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.btnSolicit}>

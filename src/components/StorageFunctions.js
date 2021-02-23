@@ -1,9 +1,8 @@
-import { useState, useEffect } from "react";
-import getRealm from "../services/realm";
+import {useState, useEffect} from 'react';
+import getRealm from '../services/realm';
 
-  const useRealm = () => {
+const useRealm = () => {
   const [store, setStore] = useState(null);
-
 
   function createInStore(schema, object) {
     store.write(() => {
@@ -21,7 +20,7 @@ import getRealm from "../services/realm";
 
   function updateInStore(schema, object) {
     store.write(() => {
-      store.create(schema, object, "modified");
+      store.create(schema, object, 'modified');
     });
     return;
   }
@@ -43,6 +42,6 @@ import getRealm from "../services/realm";
     findFilteredInStore,
     store,
   };
-}
+};
 
 export default useRealm;

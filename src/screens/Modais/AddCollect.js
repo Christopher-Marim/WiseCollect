@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useState} from 'react';
 
 import {
   View,
@@ -9,45 +9,45 @@ import {
   TextInput,
   TouchableOpacity,
   Alert,
-} from "react-native";
-import { useDispatch, useSelector } from "react-redux";
-import commonStyles from "../../commonStyles";
+} from 'react-native';
+import {useDispatch, useSelector} from 'react-redux';
+import commonStyles from '../../commonStyles';
 
-import getRealm from "../../services/realm";
+import getRealm from '../../services/realm';
 
 export default function AddList() {
-  const [collectName, setCollectName] = useState("");
+  const [collectName, setCollectName] = useState('');
   const statusModal = useSelector(
-    (state) => state.showModal.showModalADDCOLLECT
+    (state) => state.showModal.showModalADDCOLLECT,
   );
 
   const dispatch = useDispatch();
 
   async function addCollect() {
     if (!collectName || !collectName.trim()) {
-      Alert.alert("Dados Inválidos", "Descrição não Informada!");
+      Alert.alert('Dados Inválidos', 'Descrição não Informada!');
       return;
     } else {
       const realm = await getRealm();
 
       realm.write(() => {
-        realm.create("Collects", {
+        realm.create('Collects', {
           id: Math.random() * 1000,
           nome: collectName,
           dateAt: new Date(),
           itens: [],
         });
         setCollectName();
-        dispatch({ type: "REFRESH", payload: [true] });
+        dispatch({type: 'REFRESH', payload: [true]});
         setInterval(() => {
-          dispatch({ type: "REFRESH", payload: [false] });
+          dispatch({type: 'REFRESH', payload: [false]});
         }, 1000);
         closeModal();
       });
     }
   }
   function closeModal() {
-    dispatch({ type: "SHOW_MODAL_ADDCOLLECT_OFF" });
+    dispatch({type: 'SHOW_MODAL_ADDCOLLECT_OFF'});
   }
 
   return (
@@ -55,32 +55,31 @@ export default function AddList() {
       transparent={true}
       visible={statusModal}
       onRequestClose={closeModal}
-      animationType="fade"
-    >
+      animationType="fade">
       <View
         style={{
           flex: 1,
-          backgroundColor: "rgba(0,0,0,0.6)",
-          alignItems: "center",
-        }}
-      >
+          backgroundColor: 'rgba(0,0,0,0.6)',
+          alignItems: 'center',
+        }}>
         <TouchableWithoutFeedback onPress={closeModal}>
           <View style={styles.overlay} />
         </TouchableWithoutFeedback>
         <View style={styles.container}>
           <Text style={styles.headerModal}>Nova Coleta</Text>
           <View>
-          <TextInput
-            style={styles.input}
-            placeholder="Informe a Descrição"
-            onChangeText={(text) => setCollectName(text)}
-            value={collectName}
-            maxLength={20}
-          />
-          <View style={{position:"absolute",right:20,top:50 }}>
-          <Text style={{color:"grey"}}>{`${collectName?collectName.length:0}/20`}</Text>
-          </View>
-
+            <TextInput
+              style={styles.input}
+              placeholder="Informe a Descrição"
+              onChangeText={(text) => setCollectName(text)}
+              value={collectName}
+              maxLength={20}
+            />
+            <View style={{position: 'absolute', right: 20, top: 50}}>
+              <Text style={{color: 'grey'}}>{`${
+                collectName ? collectName.length : 0
+              }/20`}</Text>
+            </View>
           </View>
 
           <View style={styles.buttons}>
@@ -102,13 +101,13 @@ export default function AddList() {
 
 const styles = StyleSheet.create({
   overlay: {
-    width: "100%",
+    width: '100%',
     flex: 1,
   },
   container: {
     borderRadius: 10,
-    backgroundColor: "#FFF",
-    width: "95%",
+    backgroundColor: '#FFF',
+    width: '95%',
   },
   headerModal: {
     fontFamily: commonStyles.fontFamily,
@@ -116,14 +115,14 @@ const styles = StyleSheet.create({
     backgroundColor: commonStyles.color.principal,
     color: commonStyles.color.secondary,
     fontSize: 18,
-    textAlign: "center",
+    textAlign: 'center',
     padding: 18,
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
   },
   buttons: {
-    flexDirection: "row",
-    justifyContent: "flex-end",
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
   },
   button: {
     fontWeight: commonStyles.fontWeight,
@@ -138,10 +137,10 @@ const styles = StyleSheet.create({
     height: 40,
     marginTop: 10,
     margin: 15,
-    backgroundColor: "white",
+    backgroundColor: 'white',
     borderBottomWidth: 2,
-    borderColor: "grey",
+    borderColor: 'grey',
     borderRadius: 6,
-    backgroundColor: "#f1f2f4",
+    backgroundColor: '#f1f2f4',
   },
 });
