@@ -10,6 +10,7 @@ import {
   Vibration
 } from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
+import { ActivityIndicator, Colors } from 'react-native-paper';
 
 import commonStyles from "../commonStyles";
 import getRealm from '../services/realm'
@@ -21,13 +22,13 @@ export default function GetProducts({ navigation }) {
   const [BaseURL, setBaseURL] = useState('');
   const [LoaderVisible, setVisible] = useState(false);
   const [LengthProducts, setLengthProducts] = useState(0);
+  let Offset = 1
 
+  useEffect(() => {
+    getParmsAPI()
+  }, [])
 
-  useEffect(()=>{
-    getData()
-  },[])
-
-  const getData = async () => {
+  const getParmsAPI = async () => {
     try {
       const realm = await getRealm();
       let dataStorage = realm.objects("StorageProducts");
@@ -35,78 +36,92 @@ export default function GetProducts({ navigation }) {
 
       const apiText = await AsyncStorage.getItem('@API')
 
-      if(apiText !== null ) {
+      if (apiText !== null) {
         setBaseURL(apiText)
       }
-    } catch(e) {
+    } catch (e) {
       console.error(e)
     }
   }
-  
+
   const api = axios.create({
-    baseURL:`${BaseURL}`,
-    headers:{Authorization:'Basic 1332a3be38efc622d2b7529d9f44a1fbae8236cc9f1f0f865af71c08155a'}
-})
+    baseURL: `${BaseURL}`,
+    headers: { Authorization: 'Basic 1332a3be38efc622d2b7529d9f44a1fbae8236cc9f1f0f865af71c08155a' }
+  })
 
-async function getApi() {
-  try {
-
-      let response = await api.get(`/produto?limit=1000&order=codProduto`)
+  async function saveProductsStorage(response) {
+    try {
+      const realm = await getRealm();
+      let dataStorageProducts = realm.objects('StorageProducts');
+      setLengthProducts(dataStorageProducts.length)
     
-    console.log(response.data.data[1].codProduto)
-    setLengthProducts(1000)
+      realm.write(() => {
 
-    const realm = await getRealm();
+        response.data.data.forEach((element) => { 
 
-    realm.write(()=>{
-      for (let index = 0; index < 1000; index++) {
-        
-        realm.create("StorageProducts",{
-          id: parseInt(response.data.data[index].id,10),
-          cod:  response.data.data[index].codProduto.trim() ,
-          desc: response.data.data[index].descricaoProduto,
-          info1:response.data.data[index].informacao01,
-          info2:response.data.data[index].informacao02,
-          info3:response.data.data[index].informacao03,
-          info4:response.data.data[index].informacao04,
-          system_user_id:response.data.data[index].system_user_id,
-          system_unit_id:response.data.data[index].system_unit_id,
-        },"modified")
+          realm.create("StorageProducts", {
+            id: parseInt(element.id, 10),
+            cod: element.codProduto.trim(),
+            desc: element.descricaoProduto,
+            info1: element.informacao01,
+            info2: element.informacao02,
+            info3: element.informacao03,
+            info4: element.informacao04,
+            system_user_id: element.system_user_id,
+            system_unit_id: element.system_unit_id,
+          }, "modified")
+          
+        });
+
+      })
+    } catch (error) {
+      console.error(error)
+      setVisible(false)
+    }
+  }
+
+  async function getProductsAPI() {
+    try {
+      Offset = 1
+      let response = await api.get(`/produto?limit=1000&order=codProduto&offset=${Offset}`)
+
+      let resultado =  response.data.data
+      
+     while (resultado.length != 0) {
+        saveProductsStorage(response)
+        Offset+=1000
+        response = await api.get(`/produto?limit=1000&order=codProduto&offset=${Offset}`)
         
       }
-    })
-
-    
-      Vibration.vibrate(200)
       setVisible(false)
-    Alert.alert("Lote Recebido", `Lote recebido com sucesso`);
-  } catch (error) {
-    console.log("deu erro " + error);
-    setVisible(false)
-    Alert.alert("Recebimento não concluido",`Verificar informações da Api em configurações ou conexão com a internet`)
+
+    } catch (error) {
+      console.log("deu erro " + error);
+      setVisible(false)
+      Alert.alert("Recebimento não concluido", `Verificar informações da Api em configurações ou conexão com a internet`)
+    }
   }
-}
- 
+
 
   return (
     <SafeAreaView style={styles.container}>
-      <Loader visible={LoaderVisible}/>
+      <Loader visible={LoaderVisible} />
       <View style={styles.headerView}>
 
-        <TouchableOpacity style={styles.buttonOpenDrawer} onPress={()=>{navigation.goBack()}}>
-            <View>
-              <FontAwesome name="chevron-left" size={25} color="white"></FontAwesome>
-            </View>
-          </TouchableOpacity>
-        <Text style={styles.Text}>Baixar Produtos</Text>
-           <View></View>
-      </View>
-      <View style={{flex:8, alignItems:'center',justifyContent:'flex-start'}}>
-        <View style={{alignItems:'center', paddingTop:50}}>
-        <Text style={styles.TextInformation}>{`Produtos carregados:${LengthProducts}`}</Text>
-        <TouchableOpacity style={styles.Button} onPress={()=>{getApi(), setVisible(true)}}>
-          <Text style={styles.TextButton}>Baixar</Text>
+        <TouchableOpacity style={styles.buttonOpenDrawer} onPress={() => { navigation.goBack() }}>
+          <View>
+            <FontAwesome name="chevron-left" size={25} color="white"></FontAwesome>
+          </View>
         </TouchableOpacity>
+        <Text style={styles.Text}>Baixar Produtos</Text>
+        <View></View>
+      </View>
+      <View style={{ flex: 8, alignItems: 'center', justifyContent: 'flex-start' }}>
+        <View style={{ alignItems: 'center', paddingTop: 50 }}>
+          <Text style={styles.TextInformation}>{`Produtos carregados:${LengthProducts}`}</Text>
+          <TouchableOpacity style={styles.Button} onPress={() => { getProductsAPI(), setVisible(true)}}>
+            <Text style={styles.TextButton}>Baixar</Text>
+          </TouchableOpacity>
         </View>
 
       </View>
@@ -117,50 +132,50 @@ async function getApi() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor:'#e3e3e3'
+    backgroundColor: '#e3e3e3'
   },
   headerView: {
     flex: 1,
-    flexDirection:'row',
-    paddingHorizontal:20,
+    flexDirection: 'row',
+    paddingHorizontal: 20,
     backgroundColor: commonStyles.color.InventoryPrincipal,
     alignItems: "center",
     justifyContent: "space-between",
   },
   Text: {
     fontFamily: commonStyles.fontFamily,
-    fontWeight:commonStyles.fontWeight,
+    fontWeight: commonStyles.fontWeight,
     fontSize: 25,
     color: "white",
   },
-  TextInformation:{
+  TextInformation: {
     fontFamily: commonStyles.fontFamily,
-    fontWeight:commonStyles.fontWeight,
+    fontWeight: commonStyles.fontWeight,
     fontSize: 18,
-    marginBottom:25
+    marginBottom: 25
   },
- 
+
   addButtonCenter: {
     position: "absolute",
-    width: Dimensions.get("window").width/1.5,
+    width: Dimensions.get("window").width / 1.5,
     height: 50,
     borderRadius: 3,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: commonStyles.color.InventoryPrincipal,
   },
-  Button:{
-    height:50,
-    width:100,
-    backgroundColor:commonStyles.color.InventoryPrincipal,
-    borderRadius:10,
-    alignItems:'center',
-    justifyContent:'center',
+  Button: {
+    height: 50,
+    width: 100,
+    backgroundColor: commonStyles.color.InventoryPrincipal,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  TextButton:{
+  TextButton: {
     fontFamily: commonStyles.fontFamily,
-    fontWeight:commonStyles.fontWeight,
+    fontWeight: commonStyles.fontWeight,
     fontSize: 18,
-    color:'white',
+    color: 'white',
   }
 });

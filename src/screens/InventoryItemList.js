@@ -1,4 +1,4 @@
-import React, {Component, useState, useEffect} from 'react';
+import React, { Component, useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -10,7 +10,7 @@ import {
   TextInput,
   Dimensions,
 } from 'react-native';
-import {useSelector, useDispatch} from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import commonStyles from '../commonStyles';
@@ -30,37 +30,30 @@ export default function ItemList(props) {
   const [itens, setItens] = useState([]);
   const [auxNome, setAuxNome] = useState('');
   const [qtdProduto, setQtdProduto] = useState('');
-  const [codProduto, setCodProduto] = useState(coleta?JSON.stringify(coleta).search(/[{}]/g)==-1?JSON.stringify(coleta):'':'');
+  const [codProduto, setCodProduto] = useState(coleta ? JSON.stringify(coleta).search(/[{}]/g) == -1 ? JSON.stringify(coleta) : '' : '');
 
   const dispatch = useDispatch();
 
   useEffect(() => {
     setCodProduto(
-      coleta?JSON.stringify(coleta).search(/[{}]/g) == -1?JSON.stringify(coleta): '': '',
+      coleta ? JSON.stringify(coleta).search(/[{}]/g) == -1 ? JSON.stringify(coleta) : '' : '',
     );
   }, [coleta]);
 
-  // faz o Refresh nos Itens, para atualizar o FlatList
-  const onRefresh = () => {
-    dispatch({type: 'REFRESH_INVENTORY', payload: [true]});
-    setInterval(() => {
-      dispatch({type: 'REFRESH_INVENTORY', payload: [false]});
-    }, 1000);
-  };
-
+  
   async function addToFlatList() {
     const realm = await getRealm();
-    let data = realm.objectForPrimaryKey('Inventorys', idInventory);
-    let dataStorage = realm.objects('StorageProducts');
 
-    console.log(dataStorage.filtered(`cod == "${codProduto}" `));
+    let dataInventorys = realm.objectForPrimaryKey('Inventorys', idInventory);
+    let dataStorageProducts = realm.objects('StorageProducts');
 
-    if (dataStorage.filtered(`cod == "${codProduto}" `).length !== 0) {
-      var store = dataStorage.filtered(`cod == "${codProduto}" `);
+    if (dataStorageProducts.filtered(`cod == "${codProduto}" `).length !== 0) {
+      var store = dataStorageProducts.filtered(`cod == "${codProduto}" `);
     }
 
+
     realm.write(() => {
-      data.itens.push({
+      dataInventorys.itens.unshift({
         id: Math.random() * 1000,
         cod: store ? store[0].cod : codProduto,
         qtd: qtdProduto,
@@ -73,11 +66,21 @@ export default function ItemList(props) {
         system_user_id: store ? store[0].system_user_id : '',
         system_unit_id: store ? store[0].system_unit_id : '',
       });
-      dispatch({type: 'REFRESH_INVENTORY', payload: [true]});
-      setInterval(() => {
-        dispatch({type: 'REFRESH_INVENTORY', payload: [false]});
-      }, 1000);
+      AtualizarLista()
     });
+    clearInputs()
+  }
+
+  function AtualizarLista() {
+    dispatch({ type: 'REFRESH_INVENTORY', payload: [true] });
+    setInterval(() => {
+      dispatch({ type: 'REFRESH_INVENTORY', payload: [false] });
+    }, 1000);
+  }
+
+  function clearInputs() {
+    setCodProduto("")
+    setQtdProduto("1")
   }
 
   useEffect(() => {
@@ -114,7 +117,7 @@ export default function ItemList(props) {
         <TouchableOpacity
           style={styles.buttonOpenEllipsis}
           onPress={() => {
-            dispatch({type: 'SHOW_MODAL_ELLIPSIS_ON'});
+            dispatch({ type: 'SHOW_MODAL_ELLIPSIS_ON' });
           }}>
           <View>
             <FontAwesome
@@ -128,7 +131,7 @@ export default function ItemList(props) {
       {/*--------------ColetaManual--------------*/}
 
       <View style={styles.containerAdd}>
-        <View style={{paddingHorizontal: 5, justifyContent: 'center'}}>
+        <View style={{ paddingHorizontal: 5, justifyContent: 'center' }}>
           <Text style={styles.textBusca}>Qtd</Text>
           <TextInput
             placeholder={'QTD'}
@@ -142,7 +145,7 @@ export default function ItemList(props) {
         </View>
         <View >
           <Text style={styles.textBusca}>Código do produto</Text>
-          <View style={{flexDirection: 'row'}}>
+          <View style={{ flexDirection: 'row' }}>
             <TextInput
               placeholder={'Código do produto'}
               style={styles.textInputCod}
@@ -150,11 +153,11 @@ export default function ItemList(props) {
                 setCodProduto(text);
               }}
               value={codProduto}
-              
-              keyboardType='numeric'
-            
 
-              
+              keyboardType='numeric'
+
+
+
             />
             {qtdProduto.length > 0 && codProduto.length > 0 && (
               <TouchableOpacity
@@ -171,7 +174,7 @@ export default function ItemList(props) {
                     alignItems: 'center',
                   }}>
                   <Text
-                    style={{fontSize: 50, paddingBottom: 5, color: 'white'}}>
+                    style={{ fontSize: 50, paddingBottom: 5, color: 'white' }}>
                     +
                   </Text>
                 </View>
@@ -181,7 +184,7 @@ export default function ItemList(props) {
               <TouchableOpacity
                 onPress={() => {
                   props.navigation.navigate('Scanner'),
-                    dispatch({type: 'SET_BARCODE', payload: [{}]});
+                    dispatch({ type: 'SET_BARCODE', payload: [{}] });
                 }}>
                 <MaterialCommunityIcons
                   name="qrcode-scan"
@@ -194,14 +197,14 @@ export default function ItemList(props) {
         </View>
       </View>
       {itens.length > 0 && (
-        <View style={{flex: 9}}>
-          <View style={{flex: 9}}>
+        <View style={{ flex: 9 }}>
+          <View style={{ flex: 9 }}>
             <View style={styles.itemList}>
               <FlatList
                 data={itens}
                 keyExtractor={(item) => `${item.id}`}
-                renderItem={({item}) => (
-                  <View style={{padding: 3}}>
+                renderItem={({ item }) => (
+                  <View style={{ padding: 3 }}>
                     <Item
                       id={item.id}
                       cod={item.cod}
@@ -214,7 +217,7 @@ export default function ItemList(props) {
                   </View>
                 )}
                 refreshControl={
-                  <RefreshControl refreshing={refresh} onRefresh={onRefresh} />
+                  <RefreshControl refreshing={refresh} onRefresh={AtualizarLista} />
                 }
               />
             </View>
@@ -236,7 +239,7 @@ export default function ItemList(props) {
         </View>
       )}
       {itens.length == 0 && (
-        <View style={{flex: 9, justifyContent: 'center', alignItems: 'center'}}>
+        <View style={{ flex: 9, justifyContent: 'center', alignItems: 'center' }}>
           <View
             style={{
               flex: 8,
