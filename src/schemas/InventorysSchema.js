@@ -8,5 +8,6 @@ export default InventorysSchema = {
     check:{ type: "bool",optional:true},
     idGet:{type:"int" ,indexed:true, optional: true},
     itens: "ItensInventory[]",
+    qtdItens:{type:"int" ,indexed:true, optional: true},
   },
 };

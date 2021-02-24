@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect } from 'react';
+import React, {Component, useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -10,7 +10,7 @@ import {
   TextInput,
   Dimensions,
 } from 'react-native';
-import { useSelector, useDispatch } from 'react-redux';
+import {useSelector, useDispatch} from 'react-redux';
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import commonStyles from '../commonStyles';
@@ -29,18 +29,27 @@ export default function ItemList(props) {
 
   const [itens, setItens] = useState([]);
   const [auxNome, setAuxNome] = useState('');
-  const [qtdProduto, setQtdProduto] = useState("1");
-  const [codProduto, setCodProduto] = useState(coleta ? JSON.stringify(coleta).search(/[{}]/g) == -1 ? JSON.stringify(coleta) : '' : '');
+  const [qtdProduto, setQtdProduto] = useState('1');
+  const [codProduto, setCodProduto] = useState(
+    coleta
+      ? JSON.stringify(coleta).search(/[{}]/g) == -1
+        ? JSON.stringify(coleta)
+        : ''
+      : '',
+  );
 
   const dispatch = useDispatch();
 
   useEffect(() => {
     setCodProduto(
-      coleta ? JSON.stringify(coleta).search(/[{}]/g) == -1 ? JSON.stringify(coleta) : '' : '',
+      coleta
+        ? JSON.stringify(coleta).search(/[{}]/g) == -1
+          ? JSON.stringify(coleta)
+          : ''
+        : '',
     );
   }, [coleta]);
 
-  
   async function addToFlatList() {
     const realm = await getRealm();
 
@@ -50,7 +59,6 @@ export default function ItemList(props) {
     if (dataStorageProducts.filtered(`cod == "${codProduto}" `).length !== 0) {
       var store = dataStorageProducts.filtered(`cod == "${codProduto}" `);
     }
-
 
     realm.write(() => {
       dataInventorys.itens.unshift({
@@ -66,21 +74,21 @@ export default function ItemList(props) {
         system_user_id: store ? store[0].system_user_id : '',
         system_unit_id: store ? store[0].system_unit_id : '',
       });
-      AtualizarLista()
+      AtualizarLista();
     });
-    clearInputs()
+    clearInputs();
   }
 
   function AtualizarLista() {
-    dispatch({ type: 'REFRESH_INVENTORY', payload: [true] });
+    dispatch({type: 'REFRESH_INVENTORY', payload: [true]});
     setInterval(() => {
-      dispatch({ type: 'REFRESH_INVENTORY', payload: [false] });
+      dispatch({type: 'REFRESH_INVENTORY', payload: [false]});
     }, 1000);
   }
 
   function clearInputs() {
-    setCodProduto("")
-    setQtdProduto("1")
+    setCodProduto('');
+    setQtdProduto('1');
   }
 
   async function attListInventorys() {
@@ -88,36 +96,42 @@ export default function ItemList(props) {
     let dataInventorys = realm.objects('ItensInventory');
     let dataStorageProducts = realm.objects('StorageProducts');
 
-    dataInventorys.forEach((element, index) => {
-      if (dataStorageProducts.filtered(`cod == "${element.cod}" `).length !== 0) {
+    dataInventorys.forEach((element) => {
+      if (
+        dataStorageProducts.filtered(`cod == "${element.cod}" `).length !== 0
+      ) {
         var store = dataStorageProducts.filtered(`cod == "${element.cod}" `);
 
         realm.write(() => {
-          realm.create("ItensInventory",{  
-            id: element.id,
-            desc: store ? store[0].desc : element.desc,        
-            info1: store ? store[0].info1 : '',
-            info2: store ? store[0].info2 : '',
-            info3: store ? store[0].info3 : '',
-            info4: store ? store[0].info4 : '',
-          },'modified');
-      })
-      AtualizarLista()
+          realm.create(
+            'ItensInventory',
+            {
+              id: element.id,
+              desc: store ? store[0].desc : element.desc,
+              info1: store ? store[0].info1 : '',
+              info2: store ? store[0].info2 : '',
+              info3: store ? store[0].info3 : '',
+              info4: store ? store[0].info4 : '',
+            },
+            'modified',
+          );
+        });
+        AtualizarLista();
       }
-    })
-}
+    });
+  }
+  async function loadItens() {
+    const realm = await getRealm();
+
+    let data = realm.objectForPrimaryKey('Inventorys', idInventory);
+
+    setAuxNome(data.nome);
+    setItens(data.itens);
+  }
 
   useEffect(() => {
-    async function loadItens() {
-      const realm = await getRealm();
-
-      let data = realm.objectForPrimaryKey('Inventorys', idInventory);
-
-      setAuxNome(data.nome);
-      setItens(data.itens);
-    }
     loadItens();
-    attListInventorys()
+    attListInventorys();
   }, []);
 
   return (
@@ -142,7 +156,7 @@ export default function ItemList(props) {
         <TouchableOpacity
           style={styles.buttonOpenEllipsis}
           onPress={() => {
-            dispatch({ type: 'SHOW_MODAL_ELLIPSIS_ON' });
+            dispatch({type: 'SHOW_MODAL_ELLIPSIS_ON'});
           }}>
           <View>
             <FontAwesome
@@ -156,7 +170,7 @@ export default function ItemList(props) {
       {/*--------------ColetaManual--------------*/}
 
       <View style={styles.containerAdd}>
-        <View style={{ paddingHorizontal: 5, justifyContent: 'center' }}>
+        <View style={{paddingHorizontal: 5, justifyContent: 'center'}}>
           <Text style={styles.textBusca}>Qtd</Text>
           <TextInput
             placeholder={'QTD'}
@@ -165,12 +179,12 @@ export default function ItemList(props) {
               setQtdProduto(text);
             }}
             value={qtdProduto}
-            keyboardType='numeric'
+            keyboardType="numeric"
           />
         </View>
-        <View >
+        <View>
           <Text style={styles.textBusca}>Código do produto</Text>
-          <View style={{ flexDirection: 'row' }}>
+          <View style={{flexDirection: 'row'}}>
             <TextInput
               placeholder={'Código do produto'}
               style={styles.textInputCod}
@@ -178,11 +192,7 @@ export default function ItemList(props) {
                 setCodProduto(text);
               }}
               value={codProduto}
-
-              keyboardType='numeric'
-
-
-
+              keyboardType="numeric"
             />
             {qtdProduto.length > 0 && codProduto.length > 0 && (
               <TouchableOpacity
@@ -199,7 +209,7 @@ export default function ItemList(props) {
                     alignItems: 'center',
                   }}>
                   <Text
-                    style={{ fontSize: 50, paddingBottom: 5, color: 'white' }}>
+                    style={{fontSize: 50, paddingBottom: 5, color: 'white'}}>
                     +
                   </Text>
                 </View>
@@ -209,7 +219,7 @@ export default function ItemList(props) {
               <TouchableOpacity
                 onPress={() => {
                   props.navigation.navigate('Scanner'),
-                    dispatch({ type: 'SET_BARCODE', payload: [{}] });
+                    dispatch({type: 'SET_BARCODE', payload: [{}]});
                 }}>
                 <MaterialCommunityIcons
                   name="qrcode-scan"
@@ -222,14 +232,14 @@ export default function ItemList(props) {
         </View>
       </View>
       {itens.length > 0 && (
-        <View style={{ flex: 9 }}>
-          <View style={{ flex: 9 }}>
+        <View style={{flex: 9}}>
+          <View style={{flex: 9}}>
             <View style={styles.itemList}>
               <FlatList
                 data={itens}
                 keyExtractor={(item) => `${item.id}`}
-                renderItem={({ item }) => (
-                  <View style={{ padding: 3 }}>
+                renderItem={({item}) => (
+                  <View style={{padding: 3}}>
                     <Item
                       id={item.id}
                       cod={item.cod}
@@ -242,7 +252,10 @@ export default function ItemList(props) {
                   </View>
                 )}
                 refreshControl={
-                  <RefreshControl refreshing={refresh} onRefresh={AtualizarLista} />
+                  <RefreshControl
+                    refreshing={refresh}
+                    onRefresh={AtualizarLista}
+                  />
                 }
               />
             </View>
@@ -264,7 +277,7 @@ export default function ItemList(props) {
         </View>
       )}
       {itens.length == 0 && (
-        <View style={{ flex: 9, justifyContent: 'center', alignItems: 'center' }}>
+        <View style={{flex: 9, justifyContent: 'center', alignItems: 'center'}}>
           <View
             style={{
               flex: 8,
@@ -351,7 +364,7 @@ const styles = StyleSheet.create({
   textInputCod: {
     borderRadius: 5,
     backgroundColor: 'white',
-    width: "77%",
+    width: '77%',
     marginRight: 15,
   },
   containerAdd: {

@@ -198,7 +198,7 @@ const styles = StyleSheet.create({
     backgroundColor: commonStyles.color.principal,
   },
   buttonOpenDrawer: {
-    padding:10,
+    padding:20,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -208,7 +208,7 @@ const styles = StyleSheet.create({
   },
   buttonFilter: {
 
-    padding:10,
+    padding:20,
     alignItems: "center",
     justifyContent: "center",
   },

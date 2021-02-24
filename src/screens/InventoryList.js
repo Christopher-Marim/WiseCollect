@@ -108,6 +108,7 @@ export default function InventoryList({navigation}) {
                     itens={item.itens}
                     check={item.check ? item.check : false}
                     idGet={item.idGet ? item.idGet : 0}
+                    qtdItens={item.qtdItens ? item.qtdItens : 0}
                     navigation={navigation}></Inventory>
                 </View>
               )}

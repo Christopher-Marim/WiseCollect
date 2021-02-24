@@ -24,9 +24,11 @@ export default function Inventory(props) {
   const [Inventorys, setInventorys] = useState([]);
   const [BaseURL, setBaseURL] = useState('');
   const [Check, setCheck] = useState(false);
+  const [ColorCheck, setColorCheck] = useState("green");
   const [nome, setnome] = useState();
   const BASIC_AUTHORIZATION = 'Basic 1332a3be38efc622d2b7529d9f44a1fbae8236cc9f1f0f865af71c08155a';
   const ROTA = '/Coletaestoqueavulsas';  
+  const ROTA_ITENS = '/Coletaestoqueavulsaitens';  
   const idInventory = props.id;
   const dispatch = useDispatch();
 
@@ -35,6 +37,7 @@ export default function Inventory(props) {
     getParmsAPI();
     loadInventorys();
     setCheck(props.check);
+    changeCheckToPending()
   }, []);
   
   const api = axios.create({
@@ -58,27 +61,54 @@ export default function Inventory(props) {
       console.error(e);
     }
   };
+
+  async function PostItens(idInventory) {
+
+    try{
+      props.itens.forEach(async (element)  =>  {
+        console.log(element.id)
+      const   response=  await api.post(ROTA_ITENS, {
+          ColetaAvulsas_id: idInventory,
+          codProduto: element.cod,
+          Quantidade: element.qtd,
+          system_user_id: element.system_user_id,
+          system_unit_id: element.system_unit_id,
+        });
+        console.log(response.data)
+        
+      });
+
+    }
+    catch(e){
+      console.error(e)
+    }
+    
+  }
   
 
   async function PostInventory() {
     try {
       if(props.idGet == 0){
+
         const responsePOST = await api.post(ROTA, {
           nome: Inventorys.nome,
           quantidadecodigos: Inventorys.itens.length,
           dispositivo: nome,
         });
+
+        PostItens(responsePOST.data.data.id)
+        
         setIdResponsePostInStorage(parseInt(responsePOST.data.data.id,10))
         Vibration.vibrate(200);
         Alert.alert('Lote Enviado', `Lote ${props.nome} enviado com sucesso`);
       }else{
+        
         const responsePUT = await api.put(`${ROTA}/${props.idGet}`, {
           nome: Inventorys.nome,
           quantidadecodigos: Inventorys.itens.length,
           dispositivo: nome,
         });
-
-        console.log(responsePUT)
+        PostItens(props.idGet)
         Vibration.vibrate(200);
         Alert.alert('Lote Enviado', `Lote ${props.nome} alterado com sucesso`);
       }
@@ -118,7 +148,7 @@ export default function Inventory(props) {
 
   
 
-  async function setCheckStorage() {
+  async function setChangesStorage() {
     const realm = await getRealm();
 
     realm.write(() => {
@@ -127,13 +157,31 @@ export default function Inventory(props) {
         {
           id: idInventory,
           check: true,
+          qtdItens:Inventorys.itens.length
         },
         'modified',
       );
     });
     setCheck(props.check ? props.check : true);
+    setColorCheck("green")
+
     refresh();
   }
+
+  useEffect(()=>{
+      changeCheckToPending()
+  },[props.itens.length])
+
+ function changeCheckToPending() {
+   console.log("QTD ITENS:"+props.qtdItens)
+   console.log("QTD ITENS LENGTH: "+props.itens?.length)
+  if(props.itens?.length != props.qtdItens){
+    setColorCheck("#d4bb00")
+    refresh();
+
+  }
+  
+}
 
   const getLeftContent = () => {
     return (
@@ -143,7 +191,7 @@ export default function Inventory(props) {
           activeOpacity={0.5}
           onPress={() => {
             PostInventory();
-            setCheckStorage();
+            setChangesStorage();
           }}>
           <Icon name="send" size={20} color="white" />
         </TouchableOpacity>
@@ -223,7 +271,7 @@ export default function Inventory(props) {
             </View>
             {Check == true && (
               <View style={{position: 'absolute', right: 10, top: 0}}>
-                <Icon name={'check-circle'} size={30} color={'green'} />
+                <Icon name={'check-circle'} size={30} color={ColorCheck} />
               </View>
             )}
             <View style={{justifyContent: 'center', padding: 8}}>

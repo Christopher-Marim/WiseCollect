@@ -16,7 +16,6 @@ import getRealm from '../services/realm'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Loader from '../components/Loader'
 import axios from 'axios'
-import { useSelector, useDispatch } from 'react-redux';
 
 
 export default function GetProducts({ navigation }) {
@@ -24,7 +23,6 @@ export default function GetProducts({ navigation }) {
   const [LoaderVisible, setVisible] = useState(false);
   const [LengthProducts, setLengthProducts] = useState(0);
   let Offset = 1
-  const dispatch = useDispatch();
 
   useEffect(() => {
     getParmsAPI()
@@ -102,20 +100,13 @@ export default function GetProducts({ navigation }) {
       Alert.alert("Recebimento não concluido", `Verificar informações da Api em configurações ou conexão com a internet`)
     }
   }
-  function AtualizarLista() {
-    dispatch({ type: 'REFRESH_INVENTORY', payload: [true] });
-    setInterval(() => {
-      dispatch({ type: 'REFRESH_INVENTORY', payload: [false] });
-    }, 1000);
-  }
-
 
   return (
     <SafeAreaView style={styles.container}>
       <Loader visible={LoaderVisible} />
       <View style={styles.headerView}>
 
-        <TouchableOpacity style={styles.buttonOpenDrawer} onPress={() => { navigation.goBack(), AtualizarLista() }}>
+        <TouchableOpacity style={styles.buttonOpenDrawer} onPress={() => { navigation.goBack()}}>
           <View>
             <FontAwesome name="chevron-left" size={25} color="white"></FontAwesome>
           </View>
