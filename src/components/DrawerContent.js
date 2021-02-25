@@ -49,19 +49,7 @@ export default (props) => {
           </View>
 
           <Drawer.Section style={styles.drawerSection}>
-            <DrawerItem
-              icon={({color, size}) => (
-                <MaterialCommunityIcons
-                  name="home-outline"
-                  color={color}
-                  size={size}
-                />
-              )}
-              label="Principal"
-              onPress={() => {
-                props.navigation.navigate('CollectList');
-              }}
-            />
+            
             <DrawerItem
               icon={({color, size}) => (
                 <MaterialCommunityIcons

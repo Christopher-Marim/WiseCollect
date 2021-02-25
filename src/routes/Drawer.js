@@ -12,12 +12,11 @@ export default (props) => {
   return (
     <View style={{ flex: 1 }}>
       <Drawer.Navigator
-        initialRouteName="CollectList"
+        initialRouteName="InventoryList"
         screenOptions={{ headerShown: false }}
         drawerContent={props => <DrawerContent {...props}/>}
 
       >
-        <Drawer.Screen name="CollectList" component={CollectList}/>
         <Drawer.Screen name="InventoryList" component={InventoryList}/>
       </Drawer.Navigator>
     </View>

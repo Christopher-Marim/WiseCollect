@@ -26,27 +26,19 @@ export default function ItemList(props) {
   const refresh = useSelector((state) => state.inventorys.refresh);
   const idInventory = useSelector((state) => state.inventorys.currentID);
   const coleta = useSelector((state) => state.barcodes.barcode);
-
+console.log(coleta)
   const [itens, setItens] = useState([]);
   const [auxNome, setAuxNome] = useState('');
   const [qtdProduto, setQtdProduto] = useState('1');
   const [codProduto, setCodProduto] = useState(
-    coleta
-      ? JSON.stringify(coleta).search(/[{}]/g) == -1
-        ? JSON.stringify(coleta)
-        : ''
-      : '',
+    coleta?coleta: '',
   );
 
   const dispatch = useDispatch();
 
   useEffect(() => {
     setCodProduto(
-      coleta
-        ? JSON.stringify(coleta).search(/[{}]/g) == -1
-          ? JSON.stringify(coleta)
-          : ''
-        : '',
+      coleta?coleta: '',
     );
   }, [coleta]);
 
@@ -184,7 +176,7 @@ export default function ItemList(props) {
         </View>
         <View>
           <Text style={styles.textBusca}>Código do produto</Text>
-          <View style={{flexDirection: 'row'}}>
+          <View style={{flexDirection: 'row', paddingRight:190}}>
             <TextInput
               placeholder={'Código do produto'}
               style={styles.textInputCod}
@@ -364,7 +356,7 @@ const styles = StyleSheet.create({
   textInputCod: {
     borderRadius: 5,
     backgroundColor: 'white',
-    width: '77%',
+    width: '100%',
     marginRight: 15,
   },
   containerAdd: {

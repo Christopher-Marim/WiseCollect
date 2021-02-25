@@ -66,25 +66,22 @@ export default function Inventory(props) {
 
     try{
       props.itens.forEach(async (element)  =>  {
-        console.log(element.id)
-      const   response=  await api.post(ROTA_ITENS, {
+        
+      const response=  await api.post(ROTA_ITENS, {
           ColetaAvulsas_id: idInventory,
           codProduto: element.cod,
           Quantidade: element.qtd,
           system_user_id: element.system_user_id,
           system_unit_id: element.system_unit_id,
         });
-        console.log(response.data)
         
       });
 
     }
     catch(e){
       console.error(e)
-    }
-    
+    } 
   }
-  
 
   async function PostInventory() {
     try {

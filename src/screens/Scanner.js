@@ -16,12 +16,12 @@ export default function ProductScanRNCamera (props) {
 
   const dispatch = useDispatch();
 
-  function onBarCodeRead(scanResult) {
-    console.warn(scanResult.data);
+  function onBarCodeRead(scanResult) {   
+
    setScanned(true)
     if (scanResult.data != null) {
     setBarcode(scanResult.data)
-    dispatch({type:'SET_BARCODE', payload: [JSON.parse(scanResult.data)]})
+    dispatch({type:'SET_BARCODE', payload: [scanResult.data]})
     dispatch({type:'CALLBACK_CONDITION_TRUE', payload: [true]})
     props.navigation.navigate("InventoryItemList")
   

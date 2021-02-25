@@ -2,7 +2,7 @@ const inicialState = {
   CheckBoxCollect: false,
   CheckBoxEquipament: false,
   CheckBoxElement: false,
-  barcode:{},
+  barcode:null,
   callback:false
 
 
