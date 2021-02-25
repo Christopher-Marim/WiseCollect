@@ -14,7 +14,7 @@ import { useDispatch, useSelector} from "react-redux";
 import commonStyles from "../../commonStyles";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function EditAPI() {
+export default function EditAPI(props) {
   const [ApiText, setApiText] = useState("");
   const [ValueText, setValueText] = useState(null);
   const statusModal = useSelector(
@@ -43,15 +43,16 @@ export default function EditAPI() {
         setApiText(apiText)
       }
     } catch(e) {
-      // error reading value
+      console.error(e)
     }
   }
 
   async function UpdateAPI() {
     try {
       await AsyncStorage.setItem('@API', ApiText)
+      props?.callback()
     } catch (e) {
-      // saving error
+      console.error(e)
     }
 
   }

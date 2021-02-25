@@ -13,7 +13,6 @@ import {
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import commonStyles from '../../commonStyles';
-import getRealm from '../../services/realm';
 
 export default function Filter({callback}) {
   const statusModal = useSelector(
@@ -30,13 +29,6 @@ export default function Filter({callback}) {
     Visible = Dimensions.get('window').width;
   }
 
- 
-  
-
-  function closeModal() {
-    dispatch({type: 'SHOW_MODAL_FILTER_COLLECT_OFF'});
-    console.warn('Dale');
-  }
 
   return (
     <View

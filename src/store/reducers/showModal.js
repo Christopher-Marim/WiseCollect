@@ -5,6 +5,7 @@ const inicialState = {
   showModalEDTITEM: false,
   showModalELLIPSIS: false,
   showModalFILTERCOLLECT: false,
+  showModalEDTAPI:false,
   //inventory
   showModalADDINVENTORY: false,
   showModalADDITEM_INVENTORY: false,
