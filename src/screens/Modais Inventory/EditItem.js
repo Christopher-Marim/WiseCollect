@@ -29,8 +29,9 @@ export default function AddList() {
       return;
     } else {
       UpdateItem()
-      closeModal()
       setEdtItem('')
+      dispatch({type: 'CHANGE_STATUS_INVENTORY', payload:[true]})
+      closeModal()
       dispatch({type: 'REFRESH_INVENTORY', payload:[true]})
         setInterval(() => {
           dispatch({type: 'REFRESH_INVENTORY', payload:[false]})
@@ -48,10 +49,6 @@ export default function AddList() {
       let indexItem = data.itens.findIndex(x=> x.id ==idItem)
       data.itens[indexItem].qtd = EdtItem
     });
-    dispatch({ type: "REFRESH", payload: [true] });
-    setInterval(() => {
-      dispatch({ type: "REFRESH", payload: [false] });
-    }, 1000);
 
   }
   function closeModal() {

@@ -2,7 +2,6 @@ import React from "react";
 import { View, Text } from "react-native";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 
-import CollectList from "../screens/CollectList";
 import InventoryList from "../screens/InventoryList";
 import DrawerContent from '../components/DrawerContent'
 

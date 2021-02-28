@@ -18,7 +18,6 @@ export default function EllipsisItem({navigation}) {
   const statusModal = useSelector((state) => state.showModal.showModalELLIPSIS);
   const idInventory = useSelector((state) => state.inventorys.currentID);
 
-
   const dispatch = useDispatch();
   const onRefresh = () => {
     dispatch({ type: "REFRESH_INVENTORY", payload: [true] });

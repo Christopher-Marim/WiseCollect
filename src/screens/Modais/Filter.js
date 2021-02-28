@@ -1,15 +1,10 @@
-import React, {useEffect, useRef} from 'react';
+import React, {useRef} from 'react';
 import {useState} from 'react';
 import {
-  Keyboard,
-  Modal,
   StyleSheet,
   TextInput,
-  TouchableWithoutFeedback,
   View,
-  InteractionManager,
   Dimensions,
-  BackHandler
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import commonStyles from '../../commonStyles';

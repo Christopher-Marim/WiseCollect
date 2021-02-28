@@ -23,7 +23,6 @@ export default function Profile(props) {
     CheckConnectivity()
   },[])
 
-  const [editableNome, setEditableNome] = useState(false)
   const [nome, setNome] = useState('Usuario')
   const [senha, setSenha] = useState()
   const [email, setEmail] = useState()

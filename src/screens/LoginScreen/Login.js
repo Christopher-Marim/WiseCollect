@@ -104,6 +104,8 @@ export default function Login({navigation}) {
         const response = await api.get('/Acessoappcoleta');
         const data = response.data.data;
 
+//http://proton.etm.ltda/Acessoappcoleta?method=loadAll&usuarioApp=thalys.marim@etm.srv.br&senhaApp=admin@ETM08
+
         const realm = await getRealm();
         const store = realm.objects('User');
         console.log('1 Store' + store[0]);
@@ -120,7 +122,7 @@ export default function Login({navigation}) {
             console.log('FILTER 1 : ' + data[index]);
 
             if (data[index]) {
-              navigation.replace('CollectList');
+              navigation.replace('InventoryList');
             } else {
               clearStore();
             }
@@ -165,7 +167,7 @@ export default function Login({navigation}) {
         const realm = await getRealm();
         const store = realm.objects('User');
         if (store[0].logado == true) {
-          navigation.replace('CollectList');
+          navigation.replace('InventoryList');
         } else {
           if (Condition == true) {
             if (store[0].email == email && store[0].senha == senha) {
@@ -179,7 +181,7 @@ export default function Login({navigation}) {
                 );
               });
               setVisible(false)
-              navigation.repalce('CollectList');
+              navigation.repalce('InventoryList');
             } else {
               Alert.alert(
                 'Sem Internet',
@@ -209,6 +211,8 @@ export default function Login({navigation}) {
           senha: usuario.senha,
           token: usuario.chave,
           logado: true,
+          system_user_id:parseInt(usuario.system_user_id,10),
+          system_unit_id:parseInt(usuario.system_unit_id,10)
         });
       });
       dispatch({
@@ -224,7 +228,7 @@ export default function Login({navigation}) {
       setSenha('');
     }
     setVisible(false)
-    navigation.replace('CollectList');
+    navigation.replace('InventoryList');
   }
 
   return (

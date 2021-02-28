@@ -1,7 +1,7 @@
 import {useState, useEffect} from 'react';
 import getRealm from '../services/realm';
 
-const useRealm = () => {
+function useRealm() {
   const [store, setStore] = useState(null);
 
   function createInStore(schema, object) {
@@ -40,7 +40,7 @@ const useRealm = () => {
     updateInStore,
     getAllStore,
     findFilteredInStore,
-    store,
+    
   };
 };
 

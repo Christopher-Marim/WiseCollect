@@ -5,6 +5,7 @@ const inicialState = {
   currentID: null,
   currentIDitem: null,
   inventorys: [],
+  changeInventory: false
 };
 
 const reducer = (state = inicialState, action) => {
@@ -51,6 +52,12 @@ const reducer = (state = inicialState, action) => {
       return {
         ...state,
         currentID: action.payload[0],
+      };
+    case "CHANGE_STATUS_INVENTORY":
+      
+      return {
+        ...state,
+        changeInventory: action.payload[0],
       };
     case "CURRENT_ID_ITEM_INVENTORY":
       

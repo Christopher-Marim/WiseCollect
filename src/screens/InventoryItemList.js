@@ -16,7 +16,6 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import commonStyles from '../commonStyles';
 import Item from '../components/InventoryItem';
 import EditItem from './Modais Inventory/EditItem';
-import AddItem from './Modais/AddItem';
 import EllipsisItem from './Modais Inventory/EllipsisItem';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -26,20 +25,16 @@ export default function ItemList(props) {
   const refresh = useSelector((state) => state.inventorys.refresh);
   const idInventory = useSelector((state) => state.inventorys.currentID);
   const coleta = useSelector((state) => state.barcodes.barcode);
-console.log(coleta)
+  console.log(coleta);
   const [itens, setItens] = useState([]);
   const [auxNome, setAuxNome] = useState('');
   const [qtdProduto, setQtdProduto] = useState('1');
-  const [codProduto, setCodProduto] = useState(
-    coleta?coleta: '',
-  );
+  const [codProduto, setCodProduto] = useState(coleta ? coleta : '');
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    setCodProduto(
-      coleta?coleta: '',
-    );
+    setCodProduto(coleta ? coleta : '');
   }, [coleta]);
 
   async function addToFlatList() {
@@ -130,7 +125,6 @@ console.log(coleta)
     <SafeAreaView style={styles.container}>
       <EditItem />
       <EllipsisItem navigation={props.navigation} />
-      <AddItem navigation={props.navigation} />
 
       <View style={styles.headerView}>
         <TouchableOpacity
@@ -176,7 +170,7 @@ console.log(coleta)
         </View>
         <View>
           <Text style={styles.textBusca}>Código do produto</Text>
-          <View style={{flexDirection: 'row', paddingRight:190}}>
+          <View style={{flexDirection: 'row', paddingRight: 190}}>
             <TextInput
               placeholder={'Código do produto'}
               style={styles.textInputCod}
@@ -190,6 +184,7 @@ console.log(coleta)
               <TouchableOpacity
                 onPress={() => {
                   addToFlatList();
+                  dispatch({type: 'CHANGE_STATUS_INVENTORY', payload:[true]})
                 }}>
                 <View
                   style={{

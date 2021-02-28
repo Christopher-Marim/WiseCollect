@@ -9,7 +9,6 @@ import commonStyles from '../commonStyles';
 
 export default function ProductScanRNCamera (props) {
 
-  const [barcodeCodes, setBarcode] = useState('')
   const [scanned, setScanned] = useState(false)
   const cameraRef = useRef(null)
   const StatusScan = useSelector(state => state.showModal.showModalADDITEM);
@@ -20,7 +19,6 @@ export default function ProductScanRNCamera (props) {
 
    setScanned(true)
     if (scanResult.data != null) {
-    setBarcode(scanResult.data)
     dispatch({type:'SET_BARCODE', payload: [scanResult.data]})
     dispatch({type:'CALLBACK_CONDITION_TRUE', payload: [true]})
     props.navigation.navigate("InventoryItemList")

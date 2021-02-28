@@ -16,7 +16,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function EditAPI(props) {
   const [ApiText, setApiText] = useState("");
-  const [ValueText, setValueText] = useState(null);
   const statusModal = useSelector(
     (state) => state.showModal.showModalEDTAPI
   );

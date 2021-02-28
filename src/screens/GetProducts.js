@@ -19,12 +19,14 @@ import {ProgressBar, Colors} from 'react-native-paper';
 
 export default function GetProducts({navigation}) {
   const [BaseURL, setBaseURL] = useState('');
+  const [SystemUnitId, setSystemUnitId] = useState('');
   const [LoaderVisible, setVisible] = useState(false);
   const [LengthProducts, setLengthProducts] = useState(0);
-  let Offset = 1;
+  let Offset = 0;
 
   useEffect(() => {
     getParmsAPI();
+    getSystemUnitId();
   }, []);
 
   const getParmsAPI = async () => {
@@ -43,12 +45,20 @@ export default function GetProducts({navigation}) {
     }
   };
 
+    async function getSystemUnitId(){
+        const realm = await getRealm();
+        const store = realm.objects('User');
+        console.log("store: "+store[0].system_unit_id)
+        setSystemUnitId(store[0].system_unit_id)
+
+    }
+
   const api = axios.create({
     baseURL: `${BaseURL}`,
     headers: {
       Authorization:
-        'Basic 1332a3be38efc622d2b7529d9f44a1fbae8236cc9f1f0f865af71c08155a',
-    },
+        'Basic 1332a3be38efc622d2b7529d9f44a1fbae8236cc9f1f0f865af71c08155a'
+    }
   });
 
   async function saveProductsStorage(response) {
@@ -84,9 +94,10 @@ export default function GetProducts({navigation}) {
 
   async function getProductsAPI() {
     try {
-      Offset = 1;
+      Offset = 0;
+      console.log("UNIT ID: "+SystemUnitId)
       let response = await api.get(
-        `/produto?limit=1000&order=codProduto&offset=${Offset}`,
+        `/produto?limit=1000&offset=${Offset}&method=loadAll&systemunitid=${SystemUnitId}`,
       );
       let resultado = response.data.data;
 
@@ -94,7 +105,7 @@ export default function GetProducts({navigation}) {
         saveProductsStorage(response);
         Offset += 1000;
         response = await api
-          .get(`/produto?limit=1000&order=codProduto&offset=${Offset}`)
+          .get(`/produto?limit=1000&offset=${Offset}&method=loadAll&systemunitid=${SystemUnitId}`)
           .finally(() => {
             setVisible(false);
           });

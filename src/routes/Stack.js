@@ -1,7 +1,6 @@
 import React from "react";
 import { View, Text } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
-import ItemList from "../screens/ItemList";
 import InventoryItemList from "../screens/InventoryItemList";
 import GetProducts from "../screens/GetProducts";
 import Login from "../screens/LoginScreen/Login";
@@ -19,9 +18,8 @@ export default (props) => {
         initialRouteName="Login"
         screenOptions={{ headerShown: false }}
       >
-        <Stack.Screen name="CollectList" component={Drawer} />
-        <Stack.Screen name="ItemList" component={ItemList} />
         <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="InventoryList" component={Drawer} />
         <Stack.Screen name="Scanner" component={Scanner} />
         <Stack.Screen name="Configs" component={Configs} />
         <Stack.Screen name="Profile" component={Profile} />

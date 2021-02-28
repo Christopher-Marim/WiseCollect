@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import moment from 'moment';
 import 'moment/locale/pt-br';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import commonStyles from '../commonStyles';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -20,16 +20,21 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import getRealm from '../services/realm';
 
 export default function Inventory(props) {
+  const statusCheck = useSelector((state) => state.inventorys.changeInventory);
   const [borderRadiusCONST, setborderRadius] = useState(10);
   const [Inventorys, setInventorys] = useState([]);
   const [BaseURL, setBaseURL] = useState('');
   const [Check, setCheck] = useState(false);
   const [ColorCheck, setColorCheck] = useState("green");
   const [nome, setnome] = useState();
+  const [User, setUser] = useState('');
   const BASIC_AUTHORIZATION = 'Basic 1332a3be38efc622d2b7529d9f44a1fbae8236cc9f1f0f865af71c08155a';
   const ROTA = '/Coletaestoqueavulsas';  
   const ROTA_ITENS = '/Coletaestoqueavulsaitens';  
   const idInventory = props.id;
+
+  console.log("STATUS CHECK: "+ statusCheck)
+
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -38,6 +43,7 @@ export default function Inventory(props) {
     loadInventorys();
     setCheck(props.check);
     changeCheckToPending()
+    getUser()
   }, []);
   
   const api = axios.create({
@@ -62,20 +68,51 @@ export default function Inventory(props) {
     }
   };
 
+  async function getUser(){
+    const realm = await getRealm();
+    const store = realm.objects('User');
+    setUser({
+      system_user_id: store[0].system_user_id,
+      system_unit_id: store[0].system_unit_id
+    })
+
+}
+
   async function PostItens(idInventory) {
 
     try{
-      props.itens.forEach(async (element)  =>  {
-        
-      const response=  await api.post(ROTA_ITENS, {
-          ColetaAvulsas_id: idInventory,
-          codProduto: element.cod,
-          Quantidade: element.qtd,
-          system_user_id: element.system_user_id,
-          system_unit_id: element.system_unit_id,
+
+      if(props.idGet == 0){
+        props.itens.forEach(async (element)  =>  {
+          
+        const response=  await api.post(ROTA_ITENS, {
+            ColetaAvulsas_id: idInventory,
+            codProduto: element.cod,
+            Quantidade: element.qtd,
+            system_user_id: User.system_user_id,
+            system_unit_id: User.system_unit_id,
+          });
+          
         });
+        dispatch({type: 'CHANGE_STATUS_INVENTORY', payload:[false]})
+
+      }else{
+console.log(props.idGet)
+        await api.delete(`${ROTA_ITENS}?method=deleteAll&coletaAvulsas_id=${props.idGet}`)
         
-      });
+        props.itens.forEach(async (element)  =>  {
+          
+          const response=  await api.post(ROTA_ITENS, {
+              ColetaAvulsas_id: idInventory,
+              codProduto: element.cod,
+              Quantidade: element.qtd,
+              system_user_id: User.system_user_id,
+              system_unit_id: User.system_unit_id,
+            });
+            
+          });
+          dispatch({type: 'CHANGE_STATUS_INVENTORY', payload:[false]})
+      }
 
     }
     catch(e){
@@ -143,8 +180,6 @@ export default function Inventory(props) {
     setnome(store[0].nome);
   }
 
-  
-
   async function setChangesStorage() {
     const realm = await getRealm();
 
@@ -167,7 +202,7 @@ export default function Inventory(props) {
 
   useEffect(()=>{
       changeCheckToPending()
-  },[props.itens.length])
+  },[statusCheck])
 
  function changeCheckToPending() {
    console.log("QTD ITENS:"+props.qtdItens)
@@ -176,6 +211,11 @@ export default function Inventory(props) {
     setColorCheck("#d4bb00")
     refresh();
 
+  }
+
+  if(statusCheck == true){
+    setColorCheck("#d4bb00")
+    refresh();
   }
   
 }
