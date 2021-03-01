@@ -1,10 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import {View, StyleSheet, Linking} from 'react-native';
 import {DrawerContentScrollView, DrawerItem} from '@react-navigation/drawer';
-import {Avatar, Title, Caption, Drawer} from 'react-native-paper';
+import {Avatar, Title, Caption, Drawer, List} from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import commonStyles from '../commonStyles';
 import getRealm from '../services/realm';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 export default (props) => {
   useEffect(() => {
@@ -35,6 +37,7 @@ export default (props) => {
     <View style={{flex: 1}}>
       <DrawerContentScrollView {...props}>
         <View style={styles.drawerContent}>
+          <TouchableOpacity onPress={()=>{props.navigation.navigate('Profile'); }}>
           <View style={styles.userInfoSection}>
             <View style={{flexDirection: 'row'}}>
               <Avatar.Image
@@ -47,73 +50,164 @@ export default (props) => {
               </View>
             </View>
           </View>
+          </TouchableOpacity>
 
           <Drawer.Section style={styles.drawerSection}>
-            
-            <DrawerItem
-              icon={({color, size}) => (
-                <MaterialCommunityIcons
-                  name="download-box-outline"
-                  color={color}
-                  size={size}
-                />
-              )}
-              label="Inventário"
-              onPress={() => {
-                props.navigation.navigate('InventoryList');
-              }}
-            />
-            <DrawerItem
-              icon={({color, size}) => (
-                <MaterialCommunityIcons
-                  name="account-outline"
-                  color={color}
-                  size={size}
-                />
-              )}
-              label="Perfil"
-              onPress={() => {
-                props.navigation.navigate('Profile');
-              }}
-            />
-            {/*<DrawerItem 
+            <List.AccordionGroup>
+              <List.Item
+                left={() => (
+                  <List.Icon
                     icon={({color, size}) => (
-                        <MaterialCommunityIcons 
-                        name="send" 
+                      <MaterialCommunityIcons
+                        name="newspaper-variant-outline"
                         color={color}
                         size={size}
-                        />
+                      />
                     )}
-                    label="Bips"
-                    onPress={() => {props.navigation.navigate('')}}
-                    />*/}
+                  />
+                )}
+                title="Noticias Time Line"
+                titleStyle={{fontSize: 15}}
+                onPress={() => {}}
+              />
+              <List.Accordion
+                title="Inventário"
+                id="1"
+                left={() => (
+                  <List.Icon
+                    icon={({color, size}) => (
+                      <MaterialCommunityIcons
+                        name="download-box-outline"
+                        color={color}
+                        size={size}
+                      />
+                    )}
+                  />
+                )}>
+                <List.Item
+                  title="Coleta Avulsa"
+                  titleStyle={{fontSize: 14}}
+                  onPress={() => {
+                    props.navigation.navigate('InventoryList');
+                  }}
+                />
+                <List.Item
+                  title="Auditoria"
+                  titleStyle={{fontSize: 14}}
+                  onPress={() => {
+                    
+                  }}
+                />
+                <List.Item
+                  title="QR Code"
+                  titleStyle={{fontSize: 14}}
+                  onPress={() => {
+                    
+                  }}
+                />
+              </List.Accordion>
+              <List.Accordion
+                title="Pessoal"
+                titleStyle={{fontSize: 15}}
+                id="2"
+                left={() => (
+                  <List.Icon
+                    icon={({color, size}) => (
+                      <MaterialCommunityIcons
+                        name="account-details-outline"
+                        color={color}
+                        size={size}
+                      />
+                    )}
+                  />
+                )}>
+                <List.Item
+                  title="Agenda"
+                  titleStyle={{fontSize: 14}}
+                  onPress={() => {}}
+                />
+                <List.Item
+                  title="Solicitação de HE"
+                  titleStyle={{fontSize: 14}}
+                  onPress={() => {}}
+                />
+              </List.Accordion>
+              <List.Accordion
+                title="Logistica"
+                titleStyle={{fontSize: 15}}
+                id="3"
+                left={() => (
+                  <List.Icon
+                    icon={({color, size}) => (
+                      <MaterialCommunityIcons
+                        name="hard-hat"
+                        color={color}
+                        size={size}
+                      />
+                    )}
+                  />
+                )}>
+                <List.Item
+                  title="Embarques"
+                  titleStyle={{fontSize: 14}}
+                  onPress={() => {}}
+                />
+                <List.Item
+                  title="Requisição de EPI"
+                  titleStyle={{fontSize: 14}}
+                  onPress={() => {}}
+                />
+                <List.Item
+                  title="Treinamento Obrigatórios"
+                  titleStyle={{fontSize: 14}}
+                  onPress={() => {}}
+                />
+              </List.Accordion>
+              <List.Accordion
+                title="Configurações"
+                titleStyle={{fontSize: 15}}
+                id="4"
+                left={() => (
+                  <List.Icon
+                    icon={({color, size}) => (
+                      <FontAwesome name="cog" color={color} size={size} />
+                    )}
+                  />
+                )}>
+                <List.Item
+                  title="Perfil"
+                  titleStyle={{fontSize: 14}}
+                  onPress={() => {
+                    props.navigation.navigate('Profile');
+                  }}
+                />
+                <List.Item
+                  title="API"
+                  titleStyle={{fontSize: 14}}
+                  onPress={() => {
+                    props.navigation.navigate('Configs');
+                  }}
+                />
+              </List.Accordion>
+              <List.Item
+                left={() => (
+                  <List.Icon
+                    icon={({color, size}) => (
+                      <MaterialCommunityIcons
+                        name="account-check-outline"
+                        color={color}
+                        size={size}
+                      />
+                    )}
+                  />
+                )}
+                title="Suporte ETM"
+                titleStyle={{fontSize: 15}}
+                onPress={() => {Linking.openURL('https://www.etm.srv.br');}}
+              />
+            </List.AccordionGroup>
 
-            <DrawerItem
-              icon={({color, size}) => (
-                <MaterialCommunityIcons
-                  name="database-settings"
-                  color={color}
-                  size={size}
-                />
-              )}
-              label="Configurações"
-              onPress={() => {
-                props.navigation.navigate('Configs');
-              }}
-            />
-            <DrawerItem
-              icon={({color, size}) => (
-                <MaterialCommunityIcons
-                  name="account-check-outline"
-                  color={color}
-                  size={size}
-                />
-              )}
-              label="Suporte ETM"
-              onPress={() => {
-                Linking.openURL('https://www.etm.srv.br');
-              }}
-            />
+            
           </Drawer.Section>
         </View>
       </DrawerContentScrollView>

@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text } from "react-native";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 
-import InventoryList from "../screens/InventoryList";
+import InventoryList from "../screens/InventoryList/InventoryList";
 import DrawerContent from '../components/DrawerContent'
 
 const Drawer = createDrawerNavigator();

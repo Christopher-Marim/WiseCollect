@@ -1,21 +1,13 @@
 import React, {useState, useEffect} from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  SafeAreaView,
-  Alert,
-  Dimensions,
-} from 'react-native';
+import {View, Text, TouchableOpacity, SafeAreaView, Alert} from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-
-import commonStyles from '../commonStyles';
-import getRealm from '../services/realm';
+import getRealm from '../../services/realm';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Loader from '../components/Loader';
+import Loader from '../../components/Loader';
 import axios from 'axios';
 import {ProgressBar, Colors} from 'react-native-paper';
+
+import styles from './styles';
 
 export default function GetProducts({navigation}) {
   const [BaseURL, setBaseURL] = useState('');
@@ -45,20 +37,19 @@ export default function GetProducts({navigation}) {
     }
   };
 
-    async function getSystemUnitId(){
-        const realm = await getRealm();
-        const store = realm.objects('User');
-        console.log("store: "+store[0].system_unit_id)
-        setSystemUnitId(store[0].system_unit_id)
-
-    }
+  async function getSystemUnitId() {
+    const realm = await getRealm();
+    const store = realm.objects('User');
+    console.log('store: ' + store[0].system_unit_id);
+    setSystemUnitId(store[0].system_unit_id);
+  }
 
   const api = axios.create({
     baseURL: `${BaseURL}`,
     headers: {
       Authorization:
-        'Basic 1332a3be38efc622d2b7529d9f44a1fbae8236cc9f1f0f865af71c08155a'
-    }
+        'Basic 1332a3be38efc622d2b7529d9f44a1fbae8236cc9f1f0f865af71c08155a',
+    },
   });
 
   async function saveProductsStorage(response) {
@@ -95,7 +86,7 @@ export default function GetProducts({navigation}) {
   async function getProductsAPI() {
     try {
       Offset = 0;
-      console.log("UNIT ID: "+SystemUnitId)
+      console.log('UNIT ID: ' + SystemUnitId);
       let response = await api.get(
         `/produto?limit=1000&offset=${Offset}&method=loadAll&systemunitid=${SystemUnitId}`,
       );
@@ -105,7 +96,9 @@ export default function GetProducts({navigation}) {
         saveProductsStorage(response);
         Offset += 1000;
         response = await api
-          .get(`/produto?limit=1000&offset=${Offset}&method=loadAll&systemunitid=${SystemUnitId}`)
+          .get(
+            `/produto?limit=1000&offset=${Offset}&method=loadAll&systemunitid=${SystemUnitId}`,
+          )
           .finally(() => {
             setVisible(false);
           });
@@ -166,54 +159,3 @@ export default function GetProducts({navigation}) {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#e3e3e3',
-  },
-  headerView: {
-    flex: 1,
-    flexDirection: 'row',
-    paddingHorizontal: 20,
-    backgroundColor: commonStyles.color.InventoryPrincipal,
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  Text: {
-    fontFamily: commonStyles.fontFamily,
-    fontWeight: commonStyles.fontWeight,
-    fontSize: 25,
-    color: 'white',
-  },
-  TextInformation: {
-    fontFamily: commonStyles.fontFamily,
-    fontWeight: commonStyles.fontWeight,
-    fontSize: 18,
-    marginBottom: 5,
-  },
-
-  addButtonCenter: {
-    position: 'absolute',
-    width: Dimensions.get('window').width / 1.5,
-    height: 50,
-    borderRadius: 3,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: commonStyles.color.InventoryPrincipal,
-  },
-  Button: {
-    height: 50,
-    width: 100,
-    backgroundColor: commonStyles.color.InventoryPrincipal,
-    borderRadius: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  TextButton: {
-    fontFamily: commonStyles.fontFamily,
-    fontWeight: commonStyles.fontWeight,
-    fontSize: 18,
-    color: 'white',
-  },
-});

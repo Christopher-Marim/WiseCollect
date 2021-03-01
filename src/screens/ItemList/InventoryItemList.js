@@ -13,13 +13,14 @@ import {
 import {useSelector, useDispatch} from 'react-redux';
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import commonStyles from '../commonStyles';
-import Item from '../components/InventoryItem';
-import EditItem from './Modais Inventory/EditItem';
-import EllipsisItem from './Modais Inventory/EllipsisItem';
+import commonStyles from '../../commonStyles';
+import Item from '../../components/InventoryItem';
+import EditItem from '../Modais Inventory/EditItem';
+import EllipsisItem from '../Modais Inventory/EllipsisItem';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import getRealm from '../services/realm';
+import getRealm from '../../services/realm';
+import styles from'./styles'
 
 export default function ItemList(props) {
   const refresh = useSelector((state) => state.inventorys.refresh);
@@ -206,7 +207,7 @@ export default function ItemList(props) {
               <TouchableOpacity
                 onPress={() => {
                   props.navigation.navigate('Scanner'),
-                    dispatch({type: 'SET_BARCODE', payload: [{}]});
+                    dispatch({type: 'SET_BARCODE', payload: ['']});
                 }}>
                 <MaterialCommunityIcons
                   name="qrcode-scan"
@@ -277,87 +278,4 @@ export default function ItemList(props) {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  headerView: {
-    flex: 1,
-    flexDirection: 'row',
-    paddingHorizontal: 20,
-    backgroundColor: commonStyles.color.InventoryPrincipal,
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  itemList: {
-    flex: 8,
-    padding: 5,
-  },
-  text: {
-    fontFamily: commonStyles.fontFamily,
-    fontWeight: commonStyles.fontWeight,
-    fontSize: 25,
-    color: commonStyles.color.secondary,
-    borderBottomWidth: 2,
-    borderBottomColor: '#FFF',
-    borderBottomLeftRadius: 5,
-    borderBottomRightRadius: 5,
-  },
-  buttonGoBack: {
-    padding: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  buttonOpenEllipsis: {
-    padding: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  addButton: {
-    position: 'absolute',
-    right: 30,
-    bottom: 80,
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: commonStyles.color.InventoryPrincipal,
-  },
-  addButtonCenter: {
-    position: 'absolute',
-    width: 200,
-    height: 50,
-    borderRadius: 5,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: commonStyles.color.InventoryPrincipal,
-  },
-  textButton: {
-    fontSize: 20,
-    fontWeight: commonStyles.fontWeight,
-    fontFamily: commonStyles.fontFamily,
-    color: commonStyles.color.secondary,
-  },
-  textBusca: {
-    fontFamily: commonStyles.fontFamily,
-    fontWeight: commonStyles.fontWeight,
-  },
-  textInputQtd: {
-    backgroundColor: 'white',
-    width: 40,
-    borderRadius: 5,
-  },
-  textInputCod: {
-    borderRadius: 5,
-    backgroundColor: 'white',
-    width: '100%',
-    marginRight: 15,
-  },
-  containerAdd: {
-    backgroundColor: '#cdc8cf',
-    paddingVertical: 15,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-});
+

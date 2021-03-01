@@ -1,12 +1,12 @@
 import React from "react";
 import { View, Text } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
-import InventoryItemList from "../screens/InventoryItemList";
-import GetProducts from "../screens/GetProducts";
+import InventoryItemList from "../screens/ItemList/InventoryItemList";
+import GetProducts from "../screens/GetProducts/GetProducts";
 import Login from "../screens/LoginScreen/Login";
-import Scanner from "../screens/Scanner";
+import Scanner from "../screens/ScannerScreen/Scanner";
 import Configs from "../screens/SettingsScreen/index";
-import Profile from "../screens/Profile";
+import Profile from "../screens/ProfileScreen/Profile";
 import Drawer from './Drawer'
 
 const Stack = createStackNavigator();
