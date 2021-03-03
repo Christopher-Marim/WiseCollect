@@ -27,8 +27,8 @@ export default function PickerCompany(props) {
     props.callback(false);
   }
 
-  function callbackItem(nomeEmpresa, IdEmpresa) {
-    props.callback(false, nomeEmpresa, IdEmpresa );
+  function callbackItem(nomeEmpresa, UrlEmpresa, IdEmpresa ) {
+    props.callback(false, nomeEmpresa, IdEmpresa, UrlEmpresa );
   }
 
   useEffect(()=>{
@@ -69,7 +69,7 @@ export default function PickerCompany(props) {
           <FlatList
             data={Empresas}
             keyExtractor={(item) => `${item.system_unit_id}`}
-            renderItem={({item}) => <Companys empresa={item.nomeEmpresa} IdEmpresa={props.system_unit_id} callback={callbackItem}/>}
+            renderItem={({item}) => <Companys empresa={item.nomeEmpresa} IdEmpresa={props.system_unit_id} url={item.connection_name} callback={callbackItem}/>}
           />
         )
         }

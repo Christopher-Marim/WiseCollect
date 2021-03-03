@@ -7,6 +7,7 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
 import getRealm from '../../services/realm';
 import api from '../../services/api'
 import NetInfo from '@react-native-community/netinfo'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import styles from './styles'
 
@@ -22,11 +23,13 @@ export default function Profile(props) {
     }
     getUsuarioRealm()
     CheckConnectivity()
+    getEmpresa()
   },[])
 
   const [nome, setNome] = useState('Usuario')
   const [senha, setSenha] = useState()
   const [email, setEmail] = useState()
+  const [empresa, setEmpresa] = useState()
   const [internet, setInternet] = useState()
   const [ButonSalvar, setButtonSalvar] = useState(false)
 
@@ -59,6 +62,17 @@ export default function Profile(props) {
       
 
   }
+
+ async function getEmpresa() {
+    try {
+      const EmpresaNome = await AsyncStorage.getItem('@Empresa')
+      setEmpresa(EmpresaNome)
+      
+    } catch(e) {
+      console.error(e)
+    }
+  }
+
 
   function CheckConnectivity(){
 
@@ -157,6 +171,14 @@ export default function Profile(props) {
               <View style={{...styles.texts, paddingLeft:13}}>
               <Text style={styles.subText}>Email</Text>
               <TextInput style={{height:40, color:'#696969'}} placeholder={email} keyboardType={'email-address'} ref={refEmail} value={email} onChangeText={(text)=>{setEmail(text)}} onSubmitEditing={()=>{setButtonSalvar(true)}} />
+                
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity style={{...styles.button, paddingLeft:10}} onPress={()=>{props.navigation.navigate('Company')}} >
+              <MaterialCommunityIcons name={'office-building'} size={45}/>
+              <View style={{...styles.texts, paddingLeft:13}}>
+              <Text style={styles.subText}>Empresa</Text>
+              <Text style={{height:40, color:'#696969', marginTop:10, marginHorizontal:5}} >{empresa}</Text>
                 
               </View>
             </TouchableOpacity>

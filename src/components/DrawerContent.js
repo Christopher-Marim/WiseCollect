@@ -17,9 +17,9 @@ export default (props) => {
       const store = realm.objects('User');
       setnome(store[0].nome);
       setemail(store[0].email);
+      getNomeEmpresa()
     }
     getUsuarioRealm();
-    getNomeEmpresa()
   }, []);
 
   const [nome, setnome] = useState('Usuário');

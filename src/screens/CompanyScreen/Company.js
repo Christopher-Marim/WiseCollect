@@ -18,13 +18,14 @@ export default function Company(props) {
   const [PickerVisible, setPickerVisible] = useState(false);
   const [Empresa, setEmpresa] = useState('');
   const [EmpresaId, setEmpresaId] = useState('')
-  //const [EmpresaURL, setEmpresaId] = useState('')
+  const [EmpresaURL, setEmpresaUrl] = useState('')
 
-  function callbackPicker(statusPicker, empresa,IdEmpresa ) {
+  function callbackPicker(statusPicker, empresa,IdEmpresa,UrlEmpresa ) {
     setPickerVisible(statusPicker);
     setEmpresa(empresa?empresa:Empresa);
     setBorderColer('blue');
     setEmpresaId(IdEmpresa)
+    setEmpresaUrl(UrlEmpresa)
   }
 
   async function changeEmpresa(IdEmpresa){
@@ -65,7 +66,8 @@ export default function Company(props) {
   async function SetEmpresaAsyncStorage() {
     try {
       await AsyncStorage.setItem('@Empresa', Empresa)
-     // await AsyncStorage.setItem('@API', EmpresaURL)
+      console.log(EmpresaURL)
+      await AsyncStorage.setItem('@API', `${EmpresaURL}`)
     } catch (e) {
       console.error(e)
     }
