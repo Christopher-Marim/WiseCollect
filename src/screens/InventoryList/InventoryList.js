@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {
   View,
   Text,
@@ -6,13 +6,13 @@ import {
   TouchableOpacity,
   SafeAreaView,
   RefreshControl,
-  
+  BackHandler
 } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {useDispatch, useSelector} from 'react-redux';
 import Modal from '../Modais Inventory/AddInventory';
 import Filter from '../Modais Inventory/FilterInventory';
-
+import {useRoute, useFocusEffect} from '@react-navigation/native';
 import commonStyles from '../../commonStyles';
 import Inventory from '../../components/Inventory';
 import EditInventory from '../Modais Inventory/EditInventory';
@@ -25,7 +25,6 @@ export default function InventoryList({navigation}) {
     (state) => state.showModal.showModalFILTERINVENTORY,
   );
 
-  const [condition, setCondition] = useState(false);
   const dispatch = useDispatch();
 
   const [Inventorys, setInventorys] = useState([]);
@@ -49,6 +48,24 @@ export default function InventoryList({navigation}) {
   useEffect(() => {
     loadInventorys();
   }, []);
+
+  
+  const route = useRoute();
+  useFocusEffect(
+    useCallback(() => {
+      const onBackPress = () => {
+        if (route.name === 'InventoryList') {
+          return true;
+        } else {
+          return false;
+        }
+      };
+      BackHandler.addEventListener('hardwareBackPress', onBackPress);
+
+      return () =>
+        BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+    }, [route])      
+  )
 
   const onRefresh = () => {
     dispatch({type: 'REFRESH', payload: [true]});
