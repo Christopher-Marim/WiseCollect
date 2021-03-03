@@ -44,6 +44,8 @@ export default StyleSheet.create({
         borderRadius: 10,
         alignItems: 'center',
         justifyContent: 'center',
+        marginHorizontal:10,
+        padding:5
       },
       TextButton: {
         fontFamily: commonStyles.fontFamily,

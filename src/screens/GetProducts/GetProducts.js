@@ -77,10 +77,22 @@ export default function GetProducts({navigation}) {
           );
         });
       });
+      setVisible(false);
+
     } catch (error) {
       console.error(error);
       setVisible(false);
     }
+  }
+
+  async function deleteStorage() {
+    const realm = await getRealm();
+    const StorageAll = realm.objects("StorageProducts");
+
+    realm.write(()=>{
+      realm.delete(StorageAll)
+    })
+    setVisible(false)
   }
 
   async function getProductsAPI() {
@@ -88,20 +100,19 @@ export default function GetProducts({navigation}) {
       Offset = 0;
       console.log('UNIT ID: ' + SystemUnitId);
       let response = await api.get(
-        `/produto?limit=1000&offset=${Offset}&method=loadAll&systemunitid=${SystemUnitId}`,
+        `/produto?limit=500&offset=${Offset}&method=loadAll&systemunitid=${SystemUnitId}`,
       );
       let resultado = response.data.data;
 
       while (resultado.length != 0) {
+        setVisible(true)
         saveProductsStorage(response);
-        Offset += 1000;
+        Offset += 500;
         response = await api
           .get(
-            `/produto?limit=1000&offset=${Offset}&method=loadAll&systemunitid=${SystemUnitId}`,
+            `/produto?limit=500&offset=${Offset}&method=loadAll&systemunitid=${SystemUnitId}`,
           )
-          .finally(() => {
-            setVisible(false);
-          });
+          
       }
       setVisible(false);
     } catch (error) {
@@ -141,12 +152,10 @@ export default function GetProducts({navigation}) {
               styles.TextInformation
             }>{`Produtos carregados:${LengthProducts}`}</Text>
           <View style={{paddingVertical: 5}}>
-            <ProgressBar
-              progress={1}
-              color={'green'}
-              style={{height: 10, width: 200, borderRadius: 5}}
-            />
+            
           </View>
+          <View style={{flexDirection:'row'}}>
+            
           <TouchableOpacity
             style={styles.Button}
             onPress={() => {
@@ -154,6 +163,16 @@ export default function GetProducts({navigation}) {
             }}>
             <Text style={styles.TextButton}>Baixar</Text>
           </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.Button}
+            onPress={() => {
+              deleteStorage(),setVisible(true), setLengthProducts('0')
+            }}>
+            <Text style={styles.TextButton}>Limpar Produtos</Text>
+          </TouchableOpacity>
+
+          </View>
         </View>
       </View>
     </SafeAreaView>

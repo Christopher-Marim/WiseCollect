@@ -24,17 +24,17 @@ export default function Company(props) {
     setPickerVisible(statusPicker);
     setEmpresa(empresa?empresa:Empresa);
     setBorderColer('blue');
+
     setEmpresaId(IdEmpresa)
     setEmpresaUrl(UrlEmpresa)
   }
 
   async function changeEmpresa(IdEmpresa){
     const realm = await getRealm()
-
     realm.write(()=>{
       realm.create('User',{
         id:UserId,
-        system_unit_id:IdEmpresa
+        system_unit_id:parseInt(IdEmpresa)
       },'modified')
     })
   }
