@@ -8,6 +8,7 @@ import Scanner from "../screens/ScannerScreen/Scanner";
 import Configs from "../screens/SettingsScreen/index";
 import Profile from "../screens/ProfileScreen/Profile";
 import Drawer from './Drawer'
+import Company from "../screens/CompanyScreen/Company";
 
 const Stack = createStackNavigator();
 
@@ -18,6 +19,7 @@ export default (props) => {
         initialRouteName="Login"
         screenOptions={{ headerShown: false }}
       >
+        <Stack.Screen name="Company" component={Company}/>
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="InventoryList" component={Drawer} />
         <Stack.Screen name="Scanner" component={Scanner} />

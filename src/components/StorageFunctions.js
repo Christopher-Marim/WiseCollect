@@ -1,36 +1,45 @@
+import React from 'react'
 import {useState, useEffect} from 'react';
 import getRealm from '../services/realm';
 
-function useRealm() {
-  const [store, setStore] = useState(null);
+  function useRealm() {
 
-  function createInStore(schema, object) {
-    store.write(() => {
-      store.create(schema, object);
+    useEffect(()=>{
+      getRealm().then((realm)=>{
+          setRealm(realm)
+      })
+
+    })
+
+   const [realm, setRealm]= useState()
+
+ async function createInStore(schema, object) {
+    realm.write(() => {
+      realm.create(schema, object);
     });
     return;
   }
 
-  function deleteInStore(object) {
-    store.write(() => {
-      store.delete(object);
+async  function deleteInStore(object) {
+    realm.write(() => {
+      realm.delete(object);
     });
     return;
   }
 
-  function updateInStore(schema, object) {
-    store.write(() => {
-      store.create(schema, object, 'modified');
+async  function updateInStore(schema, object) {
+    realm.write(() => {
+      realm.create(schema, object, 'modified');
     });
     return;
   }
 
-  function getAllStore(schema) {
-    return store.objects(schema);
+ async function getAllStore(schema) {
+    return realm.objects(schema);
   }
 
-  function findFilteredInStore(schema, filter) {
-    const objects = store.objects(schema);
+ async function findFilteredInStore(schema, filter) {
+    const objects = realm.objects(schema);
     return objects.filtered(filter);
   }
 

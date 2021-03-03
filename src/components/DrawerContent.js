@@ -7,6 +7,8 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import commonStyles from '../commonStyles';
 import getRealm from '../services/realm';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 export default (props) => {
   useEffect(() => {
@@ -17,9 +19,11 @@ export default (props) => {
       setemail(store[0].email);
     }
     getUsuarioRealm();
+    getNomeEmpresa()
   }, []);
 
   const [nome, setnome] = useState('Usuário');
+  const [nomeEmpresa, setnomeEmpresa] = useState();
   const [email, setemail] = useState();
 
   async function Deslogar() {
@@ -28,9 +32,19 @@ export default (props) => {
     console.warn(store[0].id);
 
     realm.write(() => {
-      realm.create('User', {id: store[0].id, logado: false}, 'modified');
+      realm.delete(store[0]);
     });
     props.navigation.replace('Login');
+  }
+
+  const getNomeEmpresa = async () => {
+    try {
+      const EmpresaNome = await AsyncStorage.getItem('@Empresa')
+      setnomeEmpresa(EmpresaNome)
+      
+    } catch(e) {
+      console.error(e)
+    }
   }
 
   return (
@@ -47,6 +61,7 @@ export default (props) => {
               <View style={{marginLeft: 15, flexDirection: 'column'}}>
                 <Title style={styles.title}>{nome}</Title>
                 <Caption style={styles.email}>{email}</Caption>
+                <Caption style={styles.email}>{nomeEmpresa}</Caption>
               </View>
             </View>
           </View>
@@ -66,7 +81,7 @@ export default (props) => {
                     )}
                   />
                 )}
-                title="Noticias Time Line"
+                title="Notificações"
                 titleStyle={{fontSize: 15}}
                 onPress={() => {}}
               />

@@ -6,22 +6,19 @@ import {
   TextInput,
   TouchableOpacity,
   Text,
-  StyleSheet,
   Animated,
   Alert,
   Platform,
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
-import EditAPI from '../Modais/EditAPI'
 import Loader from '../../components/Loader'
 import getRealm from '../../services/realm';
 import NetInfo from '@react-native-community/netinfo';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from 'axios'
 import styles from './styles';
 
+import api from '../../services/api'
+
 export default function Login({navigation}) {
-  const [BaseURL, setBaseURL] = useState('');
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [Condition, setCondition] = useState(false);
@@ -50,25 +47,11 @@ export default function Login({navigation}) {
     //consulta no storage
     getUsuario();
     connectivity();
-    getParmsAPI()
   }, []);
 
-  const getParmsAPI = async () => {
-    try {
-      const apiText = await AsyncStorage.getItem('@API')
 
-      if (apiText !== null) {
-        setBaseURL(apiText)
-      }
-    } catch (e) {
-      console.error(e)
-    }
-  }
 
-  const api = axios.create({
-    baseURL: `${BaseURL}`,
-    headers: { Authorization: 'Basic 1332a3be38efc622d2b7529d9f44a1fbae8236cc9f1f0f865af71c08155a' }
-  })
+  
 
   function connectivity() {
     if (Platform.OS === 'android') {
@@ -104,8 +87,6 @@ export default function Login({navigation}) {
         const response = await api.get('/Acessoappcoleta');
         const data = response.data.data;
 
-//http://proton.etm.ltda/Acessoappcoleta?method=loadAll&usuarioApp=thalys.marim@etm.srv.br&senhaApp=admin@ETM08
-
         const realm = await getRealm();
         const store = realm.objects('User');
         console.log('1 Store' + store[0]);
@@ -122,7 +103,8 @@ export default function Login({navigation}) {
             console.log('FILTER 1 : ' + data[index]);
 
             if (data[index]) {
-              navigation.replace('InventoryList');
+              navigation.replace('Company');
+              setVisible(false)
             } else {
               clearStore();
             }
@@ -167,7 +149,7 @@ export default function Login({navigation}) {
         const realm = await getRealm();
         const store = realm.objects('User');
         if (store[0].logado == true) {
-          navigation.replace('InventoryList');
+          navigation.replace('Company');
         } else {
           if (Condition == true) {
             if (store[0].email == email && store[0].senha == senha) {
@@ -181,7 +163,7 @@ export default function Login({navigation}) {
                 );
               });
               setVisible(false)
-              navigation.repalce('InventoryList');
+              navigation.replace('Company');
             } else {
               Alert.alert(
                 'Sem Internet',
@@ -193,8 +175,7 @@ export default function Login({navigation}) {
       }
     } catch (error) {
       console.log(error);
-      setVisible(false)
-      Alert.alert("Login não Efetuado", `Verificar informações da Api em configurações`)
+      
     }
   }
 
@@ -228,13 +209,12 @@ export default function Login({navigation}) {
       setSenha('');
     }
     setVisible(false)
-    navigation.replace('InventoryList');
+    navigation.replace('Company');
   }
 
   return (
     <KeyboardAvoidingView style={styles.background}>
       <Loader visible={LoaderVisible}/>
-      <EditAPI callback={getParmsAPI}/>
       <View style={styles.containerLogo}>
         <Image
           style={{
@@ -274,7 +254,7 @@ export default function Login({navigation}) {
   }>
           <Text style={styles.submitText}>Acessar</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.btnSolicit} onPress={()=>{dispatch({ type: "SHOW_MODAL_EDTAPI_ON" }), getParmsAPI()}}>
+        <TouchableOpacity style={styles.btnSolicit} onPress={()=>{}}>
           <Text style={styles.solicitText}>Configurações</Text>
         </TouchableOpacity>
       </Animated.View>
