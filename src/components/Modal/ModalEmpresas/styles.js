@@ -8,7 +8,7 @@ export default StyleSheet.create({
         flex: 1,
       },
       container: {
-       height:150,   
+       height:150, 
        backgroundColor: "#001e42",
        width:'80%',
        borderRadius:10,

@@ -16,12 +16,9 @@ import styles from './styles';
 import { ActivityIndicator, Colors } from 'react-native-paper';
 
 export default function PickerCompany(props) {
-  const [ApiText, setApiText] = useState('');
-  const [Visible, setVisible] = useState(props.visible);
   const [loadingActive, setloadingActive] = useState(true);
   const [Empresas, setEmpresas] = useState()
  
-
   //Fechar Modal
   function closeModal() {
     props.callback(false);
@@ -60,7 +57,7 @@ export default function PickerCompany(props) {
         <TouchableWithoutFeedback onPress={closeModal}>
           <View style={styles.overlay} />
         </TouchableWithoutFeedback>
-        <View style={styles.container}>
+        <View style={[styles.container]}>
         {loadingActive&&(
           <ActivityIndicator animating={true} color={'white'} />
         )

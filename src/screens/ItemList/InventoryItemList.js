@@ -1,4 +1,4 @@
-import React, {Component, useState, useEffect} from 'react';
+import React, {Component, useState, useEffect, useRef} from 'react';
 import {
   View,
   Text,
@@ -8,7 +8,7 @@ import {
   RefreshControl,
   SafeAreaView,
   TextInput,
-  Dimensions,
+  Keyboard
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 
@@ -31,6 +31,8 @@ export default function ItemList(props) {
   const [auxNome, setAuxNome] = useState('');
   const [qtdProduto, setQtdProduto] = useState('1');
   const [codProduto, setCodProduto] = useState(coleta ? coleta : '');
+
+  const refProduct = useRef(null)
 
   const dispatch = useDispatch();
 
@@ -65,6 +67,7 @@ export default function ItemList(props) {
       AtualizarLista();
     });
     clearInputs();
+    getFocusInputNewProduct()
   }
 
   function AtualizarLista() {
@@ -120,7 +123,14 @@ export default function ItemList(props) {
   useEffect(() => {
     loadItens();
     attListInventorys();
+    
+
   }, []);
+
+
+  const getFocusInputNewProduct = () => {
+    refProduct.current.focus();
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -175,11 +185,18 @@ export default function ItemList(props) {
             <TextInput
               placeholder={'Código do produto'}
               style={styles.textInputCod}
+              ref={refProduct}
               onChangeText={(text) => {
                 setCodProduto(text);
               }}
               value={codProduto}
-              keyboardType="numeric"
+              keyboardType="default"
+              onSubmitEditing={()=>{  
+                addToFlatList();
+                dispatch({type: 'CHANGE_STATUS_INVENTORY', payload:[true]})
+                Keyboard.dismiss()
+              }}
+              
             />
             {qtdProduto.length > 0 && codProduto.length > 0 && (
               <TouchableOpacity

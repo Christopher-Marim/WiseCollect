@@ -7,12 +7,12 @@ export default StyleSheet.create({
         flex: 1,
       },
       headerView: {
-        flex: 1,
         flexDirection: 'row',
         paddingHorizontal: 20,
         backgroundColor: commonStyles.color.InventoryPrincipal,
         alignItems: 'center',
         justifyContent: 'space-between',
+        height:Dimensions.get('window').height*0.08
       },
       itemList: {
         flex: 8,

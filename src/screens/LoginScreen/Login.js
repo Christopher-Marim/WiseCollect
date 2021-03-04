@@ -21,8 +21,8 @@ import api from '../../services/api'
 export default function Login({navigation}) {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
-  const [Condition, setCondition] = useState(false);
-  const [internet, setInternet] = useState(null);
+  const [internet, setInternet] = useState();
+  
   const [offset] = useState(new Animated.ValueXY({x: 0, y: 80}));
   const [opacity] = useState(new Animated.Value(0));
   const [LoaderVisible, setVisible] = useState(false);
@@ -46,21 +46,25 @@ export default function Login({navigation}) {
     ]).start();
     //consulta no storage
     getUsuario();
-    connectivity();
+    connectivity()
   }, []);
 
 
 
   
 
-  function connectivity() {
+  async function connectivity() {
     if (Platform.OS === 'android') {
       NetInfo.fetch().then((state) => {
-        if (state.isConnected) {
-          setInternet(true);
+        console.log("State Conexao:"+state.isConnected)
+        
+
+        if (state.isConnected.valueOf() == true) {
+          return(setInternet(true))
         } else {
           Alert.alert('Desconectado', 'Você está desconectado a internet');
-          setInternet(false);
+          return(setInternet(false))
+          
         }
       });
     } else {
@@ -68,7 +72,6 @@ export default function Login({navigation}) {
   }
 
   function acessar() {
-    setCondition(true);
     getUsuario();
   }
   async function clearStore() {
@@ -82,6 +85,10 @@ export default function Login({navigation}) {
     });
   }
   async function getUsuario() {
+
+
+
+    console.log("LoginScreen Internet: " + internet)
     try {
       if (internet == true) {
         const response = await api.get('/Acessoappcoleta');
@@ -94,6 +101,7 @@ export default function Login({navigation}) {
         if (store[0] != undefined) {
           //Logado
           if (store[0].logado == true) {
+            setVisible(true)
             const index = data.findIndex(
               (x) =>
                 x.email == store[0].email &&
@@ -103,7 +111,7 @@ export default function Login({navigation}) {
             console.log('FILTER 1 : ' + data[index]);
 
             if (data[index]) {
-              navigation.replace('Company');
+              navigation.replace('InventoryList');
               setVisible(false)
             } else {
               clearStore();
@@ -149,28 +157,13 @@ export default function Login({navigation}) {
         const realm = await getRealm();
         const store = realm.objects('User');
         if (store[0].logado == true) {
-          navigation.replace('Company');
+          console.log("AAAAAAAAAAA")
+          navigation.replace('InventoryList');
         } else {
-          if (Condition == true) {
-            if (store[0].email == email && store[0].senha == senha) {
-              const realm = await getRealm();
-
-              realm.write(() => {
-                realm.create(
-                  'User',
-                  {id: store[0].id, logado: true},
-                  'modified',
-                );
-              });
-              setVisible(false)
-              navigation.replace('Company');
-            } else {
-              Alert.alert(
-                'Sem Internet',
-                'Por favor conecte-se a internet para fazer o login de um novo usuário',
-              );
-            }
-          }
+          Alert.alert(
+            'Sem Internet',
+            'Por favor conecte-se a internet para fazer o login de um novo usuário',
+          );
         }
       }
     } catch (error) {
