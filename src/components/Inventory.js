@@ -107,8 +107,8 @@ export default function Inventory(props) {
             )
         : props.itens.forEach(
            
-            async (element) => {
-              console.log(element);
+            async (element, index) => {
+              console.log(element, index);
               
               
               setTimeout(async ()=>{
