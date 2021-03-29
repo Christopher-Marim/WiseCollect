@@ -3,13 +3,15 @@ import UserReducer from './reducers/user'
 import InventoryReducer from './reducers/inventorys'
 import ShowModalReducer from './reducers/showModal'
 import BarcodeReducer from './reducers/barcodes'
+import NoticiasReducer from './reducers/noticiasRedux'
 
 
 const reducers = combineReducers({
     user: UserReducer,
     inventorys: InventoryReducer,
     showModal: ShowModalReducer,
-    barcodes: BarcodeReducer
+    barcodes: BarcodeReducer,
+    noticias: NoticiasReducer
 
 })
 

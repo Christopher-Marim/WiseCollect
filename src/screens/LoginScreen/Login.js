@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {
   View,
   KeyboardAvoidingView,
@@ -9,24 +9,44 @@ import {
   Animated,
   Alert,
   Platform,
+  Keyboard,
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
-import Loader from '../../components/Loader'
+import Loader from '../../components/Loader';
 import getRealm from '../../services/realm';
 import NetInfo from '@react-native-community/netinfo';
 import styles from './styles';
 
-import api from '../../services/api'
+import api from '../../services/api';
 
 export default function Login({navigation}) {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [internet, setInternet] = useState();
-  
+
   const [offset] = useState(new Animated.ValueXY({x: 0, y: 80}));
   const [opacity] = useState(new Animated.Value(0));
   const [LoaderVisible, setVisible] = useState(false);
 
+  const [imageHeight] = useState(new Animated.Value(1))
+  const [activated, setActivated] = useState(false)
+
+  const keyboardWillHide = (event) => {
+      Animated.timing(imageHeight, {
+        duration: 500,
+        toValue:1,
+        useNativeDriver: true
+
+      }).start();
+    };
+   const keyboardWillShow = (event) => {
+      Animated.timing(imageHeight, {
+        duration: event.duration,
+        toValue: 0.6,
+        useNativeDriver: true
+      }).start();
+    };
+  
   const dispatch = useDispatch();
   //ao iniciar a aplicação fará a validação se a chave registrada no storage é igual a do banco de dados, caso seja entrará na
   //aplicação, caso não solicitará que faça o login
@@ -46,25 +66,29 @@ export default function Login({navigation}) {
     ]).start();
     //consulta no storage
     getUsuario();
-    connectivity()
+    connectivity();
   }, []);
 
-
-
-  
+  useEffect(()=>{
+    
+    Keyboard.addListener('keyboardDidShow', keyboardWillShow)
+    Keyboard.addListener('keyboardDidHide', keyboardWillHide)
+    return () => {
+      Keyboard.removeListener("keyboardDidShow", keyboardWillShow);
+      Keyboard.removeListener("keyboardDidHide", keyboardWillHide);
+    };
+  },[])
 
   async function connectivity() {
     if (Platform.OS === 'android') {
       NetInfo.fetch().then((state) => {
-        console.log("State Conexao:"+state.isConnected)
-        
+        console.log('State Conexao:' + state.isConnected);
 
         if (state.isConnected.valueOf() == true) {
-          return(setInternet(true))
+          return setInternet(true);
         } else {
           Alert.alert('Desconectado', 'Você está desconectado a internet');
-          return(setInternet(false))
-          
+          return setInternet(false);
         }
       });
     } else {
@@ -85,10 +109,7 @@ export default function Login({navigation}) {
     });
   }
   async function getUsuario() {
-
-
-
-    console.log("LoginScreen Internet: " + internet)
+    console.log('LoginScreen Internet: ' + internet);
     try {
       if (internet == true) {
         const response = await api.get('/Acessoappcoleta');
@@ -101,7 +122,7 @@ export default function Login({navigation}) {
         if (store[0] != undefined) {
           //Logado
           if (store[0].logado == true) {
-            setVisible(true)
+            setVisible(true);
             const index = data.findIndex(
               (x) =>
                 x.email == store[0].email &&
@@ -112,7 +133,7 @@ export default function Login({navigation}) {
 
             if (data[index]) {
               navigation.replace('InventoryList');
-              setVisible(false)
+              setVisible(false);
             } else {
               clearStore();
             }
@@ -123,18 +144,17 @@ export default function Login({navigation}) {
                 (x) => x.email == email && x.senha == senha,
               );
               console.log('FILTER 2 : ' + data[index]);
-              
-                clearStore();
-                setUser(data[index]);
-                setVisible(false)
+
+              clearStore();
+              setUser(data[index]);
+              setVisible(false);
             } catch (error) {
-              setVisible(false)
+              setVisible(false);
               Alert.alert(
                 'Email e Senha incorretos',
                 'Verifique o email e senha digitados',
               );
             }
-             
           }
         } //Sem Storage
         else {
@@ -146,7 +166,7 @@ export default function Login({navigation}) {
 
             setUser(data[index]);
           } catch (error) {
-            setVisible(false)
+            setVisible(false);
             Alert.alert(
               'Email e Senha incorretos',
               'Verifique o email e senha digitados',
@@ -157,7 +177,7 @@ export default function Login({navigation}) {
         const realm = await getRealm();
         const store = realm.objects('User');
         if (store[0].logado == true) {
-          console.log("AAAAAAAAAAA")
+          console.log('AAAAAAAAAAA');
           navigation.replace('InventoryList');
         } else {
           Alert.alert(
@@ -168,7 +188,6 @@ export default function Login({navigation}) {
       }
     } catch (error) {
       console.log(error);
-      
     }
   }
 
@@ -185,8 +204,8 @@ export default function Login({navigation}) {
           senha: usuario.senha,
           token: usuario.chave,
           logado: true,
-          system_user_id:parseInt(usuario.system_user_id,10),
-          system_unit_id:parseInt(usuario.system_unit_id,10)
+          system_user_id: parseInt(usuario.system_user_id, 10),
+          system_unit_id: parseInt(usuario.system_unit_id, 10),
         });
       });
       dispatch({
@@ -201,18 +220,19 @@ export default function Login({navigation}) {
       setEmail('');
       setSenha('');
     }
-    setVisible(false)
+    setVisible(false);
     navigation.replace('Company');
   }
 
   return (
     <KeyboardAvoidingView style={styles.background}>
-      <Loader visible={LoaderVisible}/>
+      <Loader visible={LoaderVisible} />
       <View style={styles.containerLogo}>
-        <Image
+        <Animated.Image
           style={{
-            width: 170,
-            height: 170,
+            width:200,
+            transform: [{ scale: imageHeight  }],
+            height: 200,
             borderRadius: 10,
           }}
           source={require('../../../assets/icon.png')}
@@ -243,11 +263,14 @@ export default function Login({navigation}) {
           secureTextEntry={true}
         />
 
-        <TouchableOpacity style={styles.btnSubmit} onPress={() => {acessar(), setVisible(true)}
-  }>
+        <TouchableOpacity
+          style={styles.btnSubmit}
+          onPress={() => {
+            acessar(), setVisible(true);
+          }}>
           <Text style={styles.submitText}>Acessar</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.btnSolicit} onPress={()=>{}}>
+        <TouchableOpacity style={styles.btnSolicit} onPress={() => {}}>
           <Text style={styles.solicitText}>Configurações</Text>
         </TouchableOpacity>
       </Animated.View>

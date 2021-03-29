@@ -52,7 +52,7 @@ export default function ItemList(props) {
 
     realm.write(() => {
       dataInventorys.itens.unshift({
-        id: Math.random() * 1000,
+        id: Math.random() * 100000,
         cod: store ? store[0].cod : codProduto,
         qtd: qtdProduto,
         desc: store ? store[0].desc : codProduto,

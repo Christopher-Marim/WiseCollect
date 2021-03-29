@@ -5,7 +5,6 @@ import getRealm from '../../services/realm';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Loader from '../../components/Loader';
 import axios from 'axios';
-import {ProgressBar, Colors} from 'react-native-paper';
 
 import styles from './styles';
 
@@ -18,7 +17,6 @@ export default function GetProducts({navigation}) {
 
   useEffect(() => {
     getParmsAPI();
-    getSystemUnitId();
   }, []);
 
   const getParmsAPI = async () => {
@@ -32,6 +30,7 @@ export default function GetProducts({navigation}) {
       if (apiText !== null) {
         setBaseURL(apiText);
       }
+      getSystemUnitId();
     } catch (e) {
       console.error(e);
     }
@@ -78,7 +77,6 @@ export default function GetProducts({navigation}) {
         });
       });
       setVisible(false);
-
     } catch (error) {
       console.error(error);
       setVisible(false);
@@ -87,12 +85,12 @@ export default function GetProducts({navigation}) {
 
   async function deleteStorage() {
     const realm = await getRealm();
-    const StorageAll = realm.objects("StorageProducts");
+    const StorageAll = realm.objects('StorageProducts');
 
-    realm.write(()=>{
-      realm.delete(StorageAll)
-    })
-    setVisible(false)
+    realm.write(() => {
+      realm.delete(StorageAll);
+    });
+    setVisible(false);
   }
 
   async function getProductsAPI() {
@@ -100,28 +98,27 @@ export default function GetProducts({navigation}) {
       Offset = 0;
       console.log('UNIT ID: ' + SystemUnitId);
       let response = await api.get(
-        `/produto?limit=500&offset=${Offset}&method=loadAll&systemunitid=${SystemUnitId}`,
+        `/produto?limit=1000&offset=${Offset}&method=loadAll&systemunitid=${SystemUnitId}`,
       );
       let resultado = response.data.data;
 
       while (resultado.length != 0) {
-        setVisible(true)
+        setVisible(true);
         saveProductsStorage(response);
-        Offset += 500;
-        response = await api
-          .get(
-            `/produto?limit=500&offset=${Offset}&method=loadAll&systemunitid=${SystemUnitId}`,
-          )
-          
+        Offset += 1000;
+        response = await api.get(
+          `/produto?limit=1000&offset=${Offset}&method=loadAll&systemunitid=${SystemUnitId}`,
+        );
       }
       setVisible(false);
     } catch (error) {
       console.log('deu erro ' + error);
       setVisible(false);
-      Alert.alert(
-        'Recebimento não concluido',
-        `Verificar informações da Api em configurações ou conexão com a internet`,
-      );
+      Alert.alert('Recebimento não concluido', 
+      `Erro:${error}
+      Api: ${BaseURL},
+      SystemUnitId:${SystemUnitId}
+        `);
     }
   }
 
@@ -151,27 +148,23 @@ export default function GetProducts({navigation}) {
             style={
               styles.TextInformation
             }>{`Produtos carregados:${LengthProducts}`}</Text>
-          <View style={{paddingVertical: 5}}>
-            
-          </View>
-          <View style={{flexDirection:'row'}}>
-            
-          <TouchableOpacity
-            style={styles.Button}
-            onPress={() => {
-              getProductsAPI(), setVisible(true);
-            }}>
-            <Text style={styles.TextButton}>Baixar</Text>
-          </TouchableOpacity>
+          <View style={{paddingVertical: 5}}></View>
+          <View style={{flexDirection: 'row'}}>
+            <TouchableOpacity
+              style={styles.Button}
+              onPress={() => {
+                getProductsAPI(), setVisible(true);
+              }}>
+              <Text style={styles.TextButton}>Baixar</Text>
+            </TouchableOpacity>
 
-          <TouchableOpacity
-            style={styles.Button}
-            onPress={() => {
-              deleteStorage(),setVisible(true), setLengthProducts('0')
-            }}>
-            <Text style={styles.TextButton}>Limpar Produtos</Text>
-          </TouchableOpacity>
-
+            <TouchableOpacity
+              style={styles.Button}
+              onPress={() => {
+                deleteStorage(), setVisible(true), setLengthProducts('0');
+              }}>
+              <Text style={styles.TextButton}>Limpar Produtos</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </View>

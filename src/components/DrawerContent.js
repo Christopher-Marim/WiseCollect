@@ -8,6 +8,7 @@ import commonStyles from '../commonStyles';
 import getRealm from '../services/realm';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useDispatch} from 'react-redux'
 
 
 export default (props) => {
@@ -17,7 +18,9 @@ export default (props) => {
       const store = realm.objects('User');
       setnome(store[0].nome);
       setemail(store[0].email);
+      setUnitIdEmpresa(store[0].system_unit_id)
       getNomeEmpresa()
+
     }
     getUsuarioRealm();
   }, []);
@@ -25,11 +28,13 @@ export default (props) => {
   const [nome, setnome] = useState('Usuário');
   const [nomeEmpresa, setnomeEmpresa] = useState();
   const [email, setemail] = useState();
+  const [UnitIdEmpresa, setUnitIdEmpresa] = useState();
+
+  const dispatch = useDispatch()
 
   async function Deslogar() {
     const realm = await getRealm();
     const store = realm.objects('User');
-    console.warn(store[0].id);
 
     realm.write(() => {
       realm.delete(store[0]);
@@ -83,8 +88,11 @@ export default (props) => {
                 )}
                 title="Notificações"
                 titleStyle={{fontSize: 15}}
-                onPress={() => {}}
-              />
+                onPress={() => {
+                  props.navigation.navigate('NotificationScreen');
+
+                }}
+                    />
               <List.Accordion
                 title="Inventário"
                 id="1"
@@ -121,7 +129,10 @@ export default (props) => {
                   }}
                 />
               </List.Accordion>
-              <List.Accordion
+              {UnitIdEmpresa!=3&&(
+              <View>
+
+                <List.Accordion
                 title="Pessoal"
                 titleStyle={{fontSize: 15}}
                 id="2"
@@ -147,7 +158,8 @@ export default (props) => {
                   onPress={() => {}}
                 />
               </List.Accordion>
-              <List.Accordion
+
+<List.Accordion
                 title="Logistica"
                 titleStyle={{fontSize: 15}}
                 id="3"
@@ -178,6 +190,11 @@ export default (props) => {
                   onPress={() => {}}
                 />
               </List.Accordion>
+                
+              </View>
+              )}
+              
+              
               <List.Accordion
                 title="Configurações"
                 titleStyle={{fontSize: 15}}

@@ -25,15 +25,18 @@ export default function Inventory(props) {
   const [Inventorys, setInventorys] = useState([]);
   const [BaseURL, setBaseURL] = useState('');
   const [Check, setCheck] = useState(false);
-  const [ColorCheck, setColorCheck] = useState("green");
+  const [ColorCheck, setColorCheck] = useState('green');
   const [nome, setnome] = useState();
   const [User, setUser] = useState('');
-  const BASIC_AUTHORIZATION = 'Basic 1332a3be38efc622d2b7529d9f44a1fbae8236cc9f1f0f865af71c08155a';
-  const ROTA = '/Coletaestoqueavulsas';  
-  const ROTA_ITENS = '/Coletaestoqueavulsaitens';  
+  const BASIC_AUTHORIZATION =
+    'Basic 1332a3be38efc622d2b7529d9f44a1fbae8236cc9f1f0f865af71c08155a';
+  const ROTA = '/Coletaestoqueavulsas';
+  const ROTA_ITENS = '/Coletaestoqueavulsaitens';
   const idInventory = props.id;
 
-  console.log("STATUS CHECK: "+ statusCheck)
+  const RespostaItensEnviados = []
+
+  console.log('STATUS CHECK: ' + statusCheck);
 
   const dispatch = useDispatch();
 
@@ -42,15 +45,16 @@ export default function Inventory(props) {
     getParmsAPI();
     loadInventorys();
     setCheck(props.check);
-    changeCheckToPending()
-    getUser()
+    changeCheckToPending();
+    getUser();
   }, []);
-  
+
   const api = axios.create({
     baseURL: `${BaseURL}`,
     headers: {
       Authorization: BASIC_AUTHORIZATION,
     },
+    
   });
 
   const formatteddate = (Inventorys) =>
@@ -68,85 +72,90 @@ export default function Inventory(props) {
     }
   };
 
-  async function getUser(){
+  async function getUser() {
     const realm = await getRealm();
     const store = realm.objects('User');
     setUser({
       system_user_id: store[0].system_user_id,
-      system_unit_id: store[0].system_unit_id
-    })
-
-}
+      system_unit_id: store[0].system_unit_id,
+    });
+  }
 
   async function PostItens(idInventory) {
+    try {
+      //Deleta todos os itens com o id do pacote,
+      props.idGet != 0
+        ? (await api.delete(
+            `${ROTA_ITENS}?method=deleteAll&coletaAvulsas_id=${props.idGet}`,
+          ),
+          props.itens.forEach(async (element, index) =>{
+           
+              console.log(element);
+              //fazer post a cada 300 milisegundos
+              setTimeout(async ()=>{
+                const response = await api.post(ROTA_ITENS, {
+                  ColetaAvulsas_id: idInventory,
+                  codProduto: element.cod,
+                  Quantidade: element.qtd,
+                  system_user_id: User.system_user_id,
+                  system_unit_id: User.system_unit_id,
+                });
+                console.log(response.data.data);
 
-    try{
+              },300 *index)          
+              })
+            )
+        : props.itens.forEach(
+           
+            async (element) => {
+              console.log(element);
+              
+              
+              setTimeout(async ()=>{
+                const response = await api.post(ROTA_ITENS, {
+                  ColetaAvulsas_id: idInventory,
+                  codProduto: element.cod,
+                  Quantidade: element.qtd,
+                  system_user_id: User.system_user_id,
+                  system_unit_id: User.system_unit_id,
+                });
+                console.log(response.data.data);
 
-      if(props.idGet == 0){
-        props.itens.forEach(async (element)  =>  {
-          
-        const response=  await api.post(ROTA_ITENS, {
-            ColetaAvulsas_id: idInventory,
-            codProduto: element.cod,
-            Quantidade: element.qtd,
-            system_user_id: User.system_user_id,
-            system_unit_id: User.system_unit_id,
-          });
-          
-        });
-        dispatch({type: 'CHANGE_STATUS_INVENTORY', payload:[false]})
+              },300 *index)
+            }
+             
+          );
 
-      }else{
-console.log(props.idGet)
-        await api.delete(`${ROTA_ITENS}?method=deleteAll&coletaAvulsas_id=${props.idGet}`)
-        
-        props.itens.forEach(async (element)  =>  {
-          
-          const response=  await api.post(ROTA_ITENS, {
-              ColetaAvulsas_id: idInventory,
-              codProduto: element.cod,
-              Quantidade: element.qtd,
-              system_user_id: User.system_user_id,
-              system_unit_id: User.system_unit_id,
-            });
-            
-          });
-          dispatch({type: 'CHANGE_STATUS_INVENTORY', payload:[false]})
-      }
-
+      dispatch({type: 'CHANGE_STATUS_INVENTORY', payload: [false]});
+    } catch (e) {
+      console.error(e);
     }
-    catch(e){
-      console.error(e)
-    } 
   }
 
   async function PostInventory() {
     try {
-      if(props.idGet == 0){
-
+      if (props.idGet == 0) {
         const responsePOST = await api.post(ROTA, {
           nome: Inventorys.nome,
           quantidadecodigos: Inventorys.itens.length,
           dispositivo: nome,
         });
 
-        PostItens(responsePOST.data.data.id)
-        
-        setIdResponsePostInStorage(parseInt(responsePOST.data.data.id,10))
+        PostItens(responsePOST.data.data.id);
+
+        setIdResponsePostInStorage(parseInt(responsePOST.data.data.id, 10));
         Vibration.vibrate(200);
         Alert.alert('Lote Enviado', `Lote ${props.nome} enviado com sucesso`);
-      }else{
-        
+      } else {
         const responsePUT = await api.put(`${ROTA}/${props.idGet}`, {
           nome: Inventorys.nome,
           quantidadecodigos: Inventorys.itens.length,
           dispositivo: nome,
         });
-        PostItens(props.idGet)
+        PostItens(props.idGet);
         Vibration.vibrate(200);
         Alert.alert('Lote Enviado', `Lote ${props.nome} alterado com sucesso`);
       }
-
     } catch (error) {
       console.log('deu erro ' + error);
       Alert.alert(
@@ -156,16 +165,19 @@ console.log(props.idGet)
     }
   }
 
-  async function setIdResponsePostInStorage(IdResponsePost){
+  async function setIdResponsePostInStorage(IdResponsePost) {
     const realm = await getRealm();
 
-    realm.write(()=>{
-      realm.create('Inventorys',{
-        id:idInventory,
-        idGet:IdResponsePost,
-      },"modified")
-    })
-
+    realm.write(() => {
+      realm.create(
+        'Inventorys',
+        {
+          id: idInventory,
+          idGet: IdResponsePost,
+        },
+        'modified',
+      );
+    });
   }
 
   async function loadInventorys() {
@@ -189,36 +201,29 @@ console.log(props.idGet)
         {
           id: idInventory,
           check: true,
-          qtdItens:Inventorys.itens.length
+          qtdItens: Inventorys.itens.length,
         },
         'modified',
       );
     });
     setCheck(props.check ? props.check : true);
-    setColorCheck("green")
+    setColorCheck('green');
 
     refresh();
   }
 
-  useEffect(()=>{
-      changeCheckToPending()
-  },[statusCheck])
+  useEffect(() => {
+    changeCheckToPending();
+  }, [statusCheck]);
 
- function changeCheckToPending() {
-   console.log("QTD ITENS:"+props.qtdItens)
-   console.log("QTD ITENS LENGTH: "+props.itens?.length)
-  if(props.itens?.length != props.qtdItens){
-    setColorCheck("#d4bb00")
-    refresh();
-
+  function changeCheckToPending() {
+    console.log('QTD ITENS:' + props.qtdItens);
+    console.log('QTD ITENS LENGTH: ' + props.itens?.length);
+    if (props.itens?.length != props.qtdItens) {
+      setColorCheck('#d4bb00');
+      refresh();
+    }
   }
-
-  if(statusCheck == true){
-    setColorCheck("#d4bb00")
-    refresh();
-  }
-  
-}
 
   const getLeftContent = () => {
     return (

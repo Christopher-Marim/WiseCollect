@@ -41,7 +41,6 @@ export default StyleSheet.create({
     height: 100,
     borderRadius: 50,
     position: 'absolute',
-    left: -50,
     top: -40,
   },
   decorationBotton: {
@@ -50,7 +49,6 @@ export default StyleSheet.create({
     height: 100,
     borderRadius: 50,
     position: 'absolute',
-    right: -50,
     bottom: -40,
   },
   subtext: {
