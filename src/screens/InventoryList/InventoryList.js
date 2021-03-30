@@ -18,8 +18,10 @@ import Inventory from '../../components/Inventory';
 import EditInventory from '../Modais Inventory/EditInventory';
 import getRealm from '../../services/realm';
 import styles from './styles'
+import Loader from '../../components/Loader';
 
 export default function InventoryList({navigation}) {
+  const [LoaderVisiBle, setLoaderVisible]= useState(false)
   const refresh = useSelector((state) => state.inventorys.refresh);
   const statusModal = useSelector(
     (state) => state.showModal.showModalFILTERINVENTORY,
@@ -74,8 +76,13 @@ export default function InventoryList({navigation}) {
     }, 1000);
   };
 
+  function callbackInventory  (status) {
+    setLoaderVisible(status)
+  }
+
   return (
     <SafeAreaView style={styles.container}>
+      <Loader visible={LoaderVisiBle}></Loader>
       <Modal />
 
       <EditInventory />
@@ -112,7 +119,6 @@ export default function InventoryList({navigation}) {
           <View style={styles.collectList}>
             <FlatList
               data={Inventorys}
-              numColumns={2}
               keyExtractor={(item) => `${item.id}`}
               renderItem={({item}) => (
                 <View style={{padding: 3}}>
@@ -124,7 +130,9 @@ export default function InventoryList({navigation}) {
                     check={item.check ? item.check : false}
                     idGet={item.idGet ? item.idGet : 0}
                     qtdItens={item.qtdItens ? item.qtdItens : 0}
-                    navigation={navigation}></Inventory>
+                    navigation={navigation}
+                    callbackInventoryItem={callbackInventory}
+                    ></Inventory>
                 </View>
               )}
               refreshControl={

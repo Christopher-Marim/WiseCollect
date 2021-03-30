@@ -10,6 +10,7 @@ import {
   Alert,
   Platform,
   Keyboard,
+  Dimensions,
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import Loader from '../../components/Loader';
@@ -41,7 +42,7 @@ export default function Login({navigation}) {
     };
    const keyboardWillShow = (event) => {
       Animated.timing(imageHeight, {
-        duration: event.duration,
+        duration: 300,
         toValue: 0.6,
         useNativeDriver: true
       }).start();

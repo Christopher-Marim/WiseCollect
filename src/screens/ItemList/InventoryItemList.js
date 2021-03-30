@@ -256,6 +256,11 @@ export default function ItemList(props) {
                       info4={item.info4}></Item>
                   </View>
                 )}
+                removeClippedSubviews={true} // Unmount components when outside of window 
+                initialNumToRender={5} // Reduce initial render amount
+                maxToRenderPerBatch={5} // Reduce number in each render batch
+                updateCellsBatchingPeriod={100} // Increase time between renders
+                windowSize={7} // Reduce the window size
                 refreshControl={
                   <RefreshControl
                     refreshing={refresh}

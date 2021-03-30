@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import moment from 'moment';
 import 'moment/locale/pt-br';
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import commonStyles from '../commonStyles';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -36,7 +36,6 @@ export default function Inventory(props) {
 
   const RespostaItensEnviados = []
 
-  console.log('STATUS CHECK: ' + statusCheck);
 
   const dispatch = useDispatch();
 
@@ -54,7 +53,7 @@ export default function Inventory(props) {
     headers: {
       Authorization: BASIC_AUTHORIZATION,
     },
-    
+
   });
 
   const formatteddate = (Inventorys) =>
@@ -81,52 +80,45 @@ export default function Inventory(props) {
     });
   }
 
+
+  const forEachCustom = async (idInventory, element) => {
+    const response = await api.post(ROTA_ITENS, {
+      ColetaAvulsas_id: idInventory,
+      codProduto: element.cod,
+      Quantidade: element.qtd,
+      system_user_id: User.system_user_id,
+      system_unit_id: User.system_unit_id,
+    });
+    console.log(response.data.data)
+
+  }
+
+  async function forer(idInventory) {
+    for (let i = 0; i < props.itens.length; i++) {
+      const element = props.itens[i];
+      await forEachCustom(idInventory, element)
+
+    }
+  }
+
   async function PostItens(idInventory) {
     try {
       //Deleta todos os itens com o id do pacote,
       props.idGet != 0
         ? (await api.delete(
-            `${ROTA_ITENS}?method=deleteAll&coletaAvulsas_id=${props.idGet}`,
-          ),
-          props.itens.forEach(async (element, index) =>{
-           
-              console.log(element);
-              //fazer post a cada 300 milisegundos
-              setTimeout(async ()=>{
-                const response = await api.post(ROTA_ITENS, {
-                  ColetaAvulsas_id: idInventory,
-                  codProduto: element.cod,
-                  Quantidade: element.qtd,
-                  system_user_id: User.system_user_id,
-                  system_unit_id: User.system_unit_id,
-                });
-                console.log(response.data.data);
+          `${ROTA_ITENS}?method=deleteAll&coletaAvulsas_id=${props.idGet}`,
+        ),
+          await forer(idInventory)
+        )
+        : (
 
-              },300 *index)          
-              })
-            )
-        : props.itens.forEach(
-           
-            async (element, index) => {
-              console.log(element, index);
-              
-              
-              setTimeout(async ()=>{
-                const response = await api.post(ROTA_ITENS, {
-                  ColetaAvulsas_id: idInventory,
-                  codProduto: element.cod,
-                  Quantidade: element.qtd,
-                  system_user_id: User.system_user_id,
-                  system_unit_id: User.system_unit_id,
-                });
-                console.log(response.data.data);
+          await forer(idInventory)
+        )
+        props.callbackInventoryItem(false),
+        Alert.alert('Lote Enviado', `Lote ${props.nome} enviado com sucesso`)
+        Vibration.vibrate(200);
 
-              },300 *index)
-            }
-             
-          );
-
-      dispatch({type: 'CHANGE_STATUS_INVENTORY', payload: [false]});
+      dispatch({ type: 'CHANGE_STATUS_INVENTORY', payload: [false] });
     } catch (e) {
       console.error(e);
     }
@@ -135,6 +127,8 @@ export default function Inventory(props) {
   async function PostInventory() {
     try {
       if (props.idGet == 0) {
+        props.callbackInventoryItem(true)
+
         const responsePOST = await api.post(ROTA, {
           nome: Inventorys.nome,
           quantidadecodigos: Inventorys.itens.length,
@@ -143,21 +137,19 @@ export default function Inventory(props) {
 
         PostItens(responsePOST.data.data.id);
 
-        setIdResponsePostInStorage(parseInt(responsePOST.data.data.id, 10));
-        Vibration.vibrate(200);
-        Alert.alert('Lote Enviado', `Lote ${props.nome} enviado com sucesso`);
       } else {
+        props.callbackInventoryItem(true)
         const responsePUT = await api.put(`${ROTA}/${props.idGet}`, {
           nome: Inventorys.nome,
           quantidadecodigos: Inventorys.itens.length,
           dispositivo: nome,
         });
         PostItens(props.idGet);
-        Vibration.vibrate(200);
-        Alert.alert('Lote Enviado', `Lote ${props.nome} alterado com sucesso`);
       }
     } catch (error) {
       console.log('deu erro ' + error);
+      props.callbackInventoryItem(false),
+
       Alert.alert(
         'Post não concluido',
         `Verificar informações da Api em configurações`,
@@ -239,8 +231,8 @@ export default function Inventory(props) {
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => {
-            dispatch({type: 'SHOW_MODAL_EDTINVENTORY_ON'});
-            dispatch({type: 'CURRENT_ID_INVENTORY', payload: [props.id]});
+            dispatch({ type: 'SHOW_MODAL_EDTINVENTORY_ON' });
+            dispatch({ type: 'CURRENT_ID_INVENTORY', payload: [props.id] });
             console.log(props.id);
           }}
           style={styles.left2}
@@ -252,9 +244,9 @@ export default function Inventory(props) {
   };
 
   function refresh() {
-    dispatch({type: 'REFRESH_INVENTORY', payload: [true]});
+    dispatch({ type: 'REFRESH_INVENTORY', payload: [true] });
     setInterval(() => {
-      dispatch({type: 'REFRESH_INVENTORY', payload: [false]});
+      dispatch({ type: 'REFRESH_INVENTORY', payload: [false] });
     }, 1000);
   }
 
@@ -302,22 +294,22 @@ export default function Inventory(props) {
           style={styles.button}
           onPress={() => {
             props.navigation.navigate('InventoryItemList');
-            dispatch({type: 'CURRENT_ID_INVENTORY', payload: [props.id]});
+            dispatch({ type: 'CURRENT_ID_INVENTORY', payload: [props.id] });
           }}>
-          <View style={{alignItems: 'center', flexDirection: 'row'}}>
+          <View style={{ alignItems: 'center', flexDirection: 'row' }}>
             <View style={styles.textCollect}>
               <Text style={styles.nomeCollect}>{props.nome}</Text>
-              <Text style={{fontWeight: commonStyles.fontWeight}}>
+              <Text style={{ fontWeight: commonStyles.fontWeight }}>
                 Data: {formatteddate(`${props.dateAt}`)}
               </Text>
             </View>
             {Check == true && (
-              <View style={{position: 'absolute', right: 10, top: 0}}>
+              <View style={{ position: 'absolute', right: 10, top: 0 }}>
                 <Icon name={'check-circle'} size={30} color={ColorCheck} />
               </View>
             )}
-            <View style={{justifyContent: 'center', padding: 8}}>
-              <Text style={{fontWeight: commonStyles.fontWeight}}>
+            <View style={{ justifyContent: 'center', padding: 8 }}>
+              <Text style={{ fontWeight: commonStyles.fontWeight }}>
                 Coletas: {props.itens.length}
               </Text>
             </View>
@@ -337,7 +329,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexWrap: 'wrap',
     paddingVertical: 10,
-    width: Dimensions.get('window').width / 2.1,
+    width: "100%",
     borderRadius: 5,
     borderLeftColor: commonStyles.color.InventoryPrincipal,
     backgroundColor: 'white',
