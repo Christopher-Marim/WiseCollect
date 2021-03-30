@@ -178,7 +178,6 @@ export default function Login({navigation}) {
         const realm = await getRealm();
         const store = realm.objects('User');
         if (store[0].logado == true) {
-          console.log('AAAAAAAAAAA');
           navigation.replace('InventoryList');
         } else {
           Alert.alert(
@@ -193,14 +192,14 @@ export default function Login({navigation}) {
   }
 
   async function setUser(usuario) {
-    console.log('USUARIO' + usuario.nomeUsuario);
+    console.log('USUARIO' + usuario.nomeusuario);
     if (usuario.length != 0) {
       const realm = await getRealm();
 
       realm.write(() => {
         realm.create('User', {
           id: parseInt(usuario.id),
-          nome: usuario.nomeUsuario,
+          nome: usuario.nomeusuario,
           email: usuario.email,
           senha: usuario.senha,
           token: usuario.chave,
@@ -212,7 +211,7 @@ export default function Login({navigation}) {
       dispatch({
         type: 'USER_LOGGED_IN',
         payload: [
-          usuario.nomeUsuario,
+          usuario.nomeusuario,
           usuario.email,
           usuario.senha,
           usuario.chave,

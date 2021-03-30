@@ -63,8 +63,8 @@ export default function GetProducts({navigation}) {
             'StorageProducts',
             {
               id: parseInt(element.id, 10),
-              cod: element.codProduto.trim(),
-              desc: element.descricaoProduto,
+              cod: element.codproduto.trim(),
+              desc: element.descricaoproduto,
               info1: element.informacao01,
               info2: element.informacao02,
               info3: element.informacao03,

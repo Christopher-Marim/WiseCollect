@@ -83,9 +83,9 @@ export default function Inventory(props) {
 
   const forEachCustom = async (idInventory, element) => {
     const response = await api.post(ROTA_ITENS, {
-      ColetaAvulsas_id: idInventory,
-      codProduto: element.cod,
-      Quantidade: element.qtd,
+      coletaavulsas_id: idInventory,
+      codproduto: element.cod,
+      quantidade: element.qtd,
       system_user_id: User.system_user_id,
       system_unit_id: User.system_unit_id,
     });
@@ -106,17 +106,16 @@ export default function Inventory(props) {
       //Deleta todos os itens com o id do pacote,
       props.idGet != 0
         ? (await api.delete(
-          `${ROTA_ITENS}?method=deleteAll&coletaAvulsas_id=${props.idGet}`,
+          `${ROTA_ITENS}?method=deleteAll&coletaavulsas_id=${props.idGet}`,
         ),
           await forer(idInventory)
         )
         : (
-
           await forer(idInventory)
         )
-        props.callbackInventoryItem(false),
+      props.callbackInventoryItem(false),
         Alert.alert('Lote Enviado', `Lote ${props.nome} enviado com sucesso`)
-        Vibration.vibrate(200);
+      Vibration.vibrate(200);
 
       dispatch({ type: 'CHANGE_STATUS_INVENTORY', payload: [false] });
     } catch (e) {
@@ -133,6 +132,8 @@ export default function Inventory(props) {
           nome: Inventorys.nome,
           quantidadecodigos: Inventorys.itens.length,
           dispositivo: nome,
+          system_user_id: User.system_user_id,
+          system_unit_id: User.system_unit_id,
         });
 
         PostItens(responsePOST.data.data.id);
@@ -143,6 +144,8 @@ export default function Inventory(props) {
           nome: Inventorys.nome,
           quantidadecodigos: Inventorys.itens.length,
           dispositivo: nome,
+          system_user_id: User.system_user_id,
+          system_unit_id: User.system_unit_id,
         });
         PostItens(props.idGet);
       }
@@ -150,10 +153,10 @@ export default function Inventory(props) {
       console.log('deu erro ' + error);
       props.callbackInventoryItem(false),
 
-      Alert.alert(
-        'Post não concluido',
-        `Verificar informações da Api em configurações`,
-      );
+        Alert.alert(
+          'Post não concluido',
+          `Verificar informações da Api em configurações`,
+        );
     }
   }
 

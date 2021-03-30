@@ -66,7 +66,7 @@ export default function PickerCompany(props) {
           <FlatList
             data={Empresas}
             keyExtractor={(item) => `${item.system_unit_id}`}
-            renderItem={({item}) => <Companys empresa={item.nomeEmpresa} IdEmpresa={item.system_unit_id} url={item.connection_name} callback={callbackItem}/>}
+            renderItem={({item}) => <Companys empresa={item.nomeempresa} IdEmpresa={item.system_unit_id} url={item.connection_name} callback={callbackItem}/>}
           />
         )
         }
