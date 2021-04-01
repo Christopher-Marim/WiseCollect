@@ -15,7 +15,7 @@ import Swipeable from 'react-native-gesture-handler/Swipeable';
 import commonStyles from '../commonStyles';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import{getParmsAPI} from '../services/api'
 
 import getRealm from '../services/realm';
 
@@ -33,15 +33,12 @@ export default function Inventory(props) {
   const ROTA = '/Coletaestoqueavulsas';
   const ROTA_ITENS = '/Coletaestoqueavulsaitens';
   const idInventory = props.id;
-
-  const RespostaItensEnviados = []
-
-
+  
   const dispatch = useDispatch();
 
   useEffect(() => {
     getUsuarioRealm();
-    getParmsAPI();
+    getParmsAPI().then(res=>{setBaseURL(res)})
     loadInventorys();
     setCheck(props.check);
     changeCheckToPending();
@@ -58,18 +55,6 @@ export default function Inventory(props) {
 
   const formatteddate = (Inventorys) =>
     moment(Inventorys.dateAt).locale('pt-br').format('D/MM/YYYY');
-
-  const getParmsAPI = async () => {
-    try {
-      const apiText = await AsyncStorage.getItem('@API');
-
-      if (apiText !== null) {
-        setBaseURL(apiText);
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  };
 
   async function getUser() {
     const realm = await getRealm();

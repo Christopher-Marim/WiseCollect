@@ -5,6 +5,7 @@ import getRealm from '../../services/realm';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Loader from '../../components/Loader';
 import axios from 'axios';
+import {getParmsAPI} from '../../services/api'
 
 import styles from './styles';
 
@@ -16,25 +17,9 @@ export default function GetProducts({navigation}) {
   let Offset = 0;
 
   useEffect(() => {
-    getParmsAPI();
+    getParmsAPI().then(res=>{setBaseURL(res)})
+    getSystemUnitId();
   }, []);
-
-  const getParmsAPI = async () => {
-    try {
-      const realm = await getRealm();
-      let dataStorage = realm.objects('StorageProducts');
-      setLengthProducts(dataStorage.length);
-
-      const apiText = await AsyncStorage.getItem('@API');
-
-      if (apiText !== null) {
-        setBaseURL(apiText);
-      }
-      getSystemUnitId();
-    } catch (e) {
-      console.error(e);
-    }
-  };
 
   async function getSystemUnitId() {
     const realm = await getRealm();
@@ -56,9 +41,10 @@ export default function GetProducts({navigation}) {
       const realm = await getRealm();
       let dataStorageProducts = realm.objects('StorageProducts');
       setLengthProducts(dataStorageProducts.length);
+      const produtos = response.data.data
 
       realm.write(() => {
-        response.data.data.forEach((element) => {
+        produtos.forEach((element) => {
           realm.create(
             'StorageProducts',
             {
@@ -96,7 +82,7 @@ export default function GetProducts({navigation}) {
   async function getProductsAPI() {
     try {
       Offset = 0;
-      console.log('UNIT ID: ' + SystemUnitId);
+
       let response = await api.get(
         `/produto?limit=1000&offset=${Offset}&method=loadAll&systemunitid=${SystemUnitId}`,
       );

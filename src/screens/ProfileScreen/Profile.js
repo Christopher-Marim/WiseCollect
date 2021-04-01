@@ -5,7 +5,7 @@ import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
 import getRealm from '../../services/realm';
-import api from '../../services/api'
+import {api} from '../../services/api'
 import NetInfo from '@react-native-community/netinfo'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -60,7 +60,6 @@ export default function Profile(props) {
       console.log(error)
     }
       
-
   }
 
  async function getEmpresa() {
@@ -86,7 +85,6 @@ export default function Profile(props) {
     }})
     } else {
 
-      
       // For iOS devices
       NetInfo.addEventListener(
         "connectionChange",

@@ -18,7 +18,7 @@ import getRealm from '../../services/realm';
 import NetInfo from '@react-native-community/netinfo';
 import styles from './styles';
 
-import api from '../../services/api';
+import {api} from '../../services/api';
 
 export default function Login({navigation}) {
   const [email, setEmail] = useState('');

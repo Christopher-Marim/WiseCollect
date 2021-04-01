@@ -19,6 +19,8 @@ import axios from 'axios';
 import getRealm from '../../services/realm';
 import Loader from '../../components/Loader';
 
+import {getParmsAPI} from '../../services/api'
+
 export default function NotificationScreen({navigation}) {
   const [ModalNotificationVisible, setModalNotificationVisible] = useState(
     false,
@@ -41,6 +43,7 @@ export default function NotificationScreen({navigation}) {
 
   useEffect(() => {
     getNoticias();
+    
   }, []);
 
   const tougleEye = () => {
@@ -76,18 +79,6 @@ export default function NotificationScreen({navigation}) {
     setIdCallback(IdItem);
   }
 
-  const getParmsAPI = async () => {
-    try {
-      const apiText = await AsyncStorage.getItem('@API');
-
-      if (apiText !== null) {
-        setBaseURL(apiText);
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
   const api = axios.create({
     baseURL: `${BaseURL}`,
     headers: {
@@ -97,7 +88,7 @@ export default function NotificationScreen({navigation}) {
 
   async function getNoticias() {
     getSystemUserId();
-    getParmsAPI();
+    getParmsAPI().then(res=>{setBaseURL(res)})
     try {
       setVisibleLoader(true);
       await api

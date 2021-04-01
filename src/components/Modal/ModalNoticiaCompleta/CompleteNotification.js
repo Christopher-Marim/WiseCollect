@@ -18,9 +18,6 @@ export default function CompleteNotification(props) {
     props.callback(false);
   }
 
-  
-
-
   return (
     <Modal
       transparent={true}
