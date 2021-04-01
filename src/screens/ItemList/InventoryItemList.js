@@ -163,7 +163,12 @@ export default function ItemList(props) {
               color="white"></FontAwesome>
           </View>
         </TouchableOpacity>
-        <Text style={styles.text}>{auxNome}</Text>
+        
+          
+        <Text adjustsFontSizeToFit
+        numberOfLines={1}
+         style={[styles.text,{maxWidth:300}]}>{auxNome}</Text>
+        
 
         <TouchableOpacity
           style={styles.buttonOpenEllipsis}

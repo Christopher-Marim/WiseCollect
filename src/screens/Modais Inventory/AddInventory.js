@@ -75,10 +75,8 @@ export default function AddList() {
             placeholder="Informe a Descrição"
             onChangeText={(text) => setInventoryName(text)}
             value={InventoryName}
-            maxLength={20}
           />
           <View style={{position:"absolute",right:20,top:50 }}>
-          <Text style={{color:"grey"}}>{`${InventoryName?InventoryName.length:0}/20`}</Text>
           </View>
 
           </View>
