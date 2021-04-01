@@ -1,4 +1,4 @@
-import React, {Component, useState, useEffect, useRef} from 'react';
+import React, {useCallback, useState, useEffect, useRef} from 'react';
 import {
   View,
   Text,
@@ -132,6 +132,21 @@ export default function ItemList(props) {
     refProduct.current.focus();
   };
 
+  const renderitem = useCallback(({item}) => (
+    <View style={{padding: 3}}>
+      <Item
+        id={item.id}
+        cod={item.cod}
+        qtd={item.qtd}
+        desc={item.desc}
+        info1={item.info1}
+        info2={item.info2}
+        info3={item.info3}
+        info4={item.info4}></Item>
+    </View>
+  ), []) 
+
+  
   return (
     <SafeAreaView style={styles.container}>
       <EditItem />
@@ -243,30 +258,12 @@ export default function ItemList(props) {
               <FlatList
                 data={itens}
                 keyExtractor={(item) => `${item.id}`}
-                renderItem={({item}) => (
-                  <View style={{padding: 3}}>
-                    <Item
-                      id={item.id}
-                      cod={item.cod}
-                      qtd={item.qtd}
-                      desc={item.desc}
-                      info1={item.info1}
-                      info2={item.info2}
-                      info3={item.info3}
-                      info4={item.info4}></Item>
-                  </View>
-                )}
+                renderItem={renderitem}
                 removeClippedSubviews={true} // Unmount components when outside of window 
                 initialNumToRender={5} // Reduce initial render amount
-                maxToRenderPerBatch={5} // Reduce number in each render batch
+                maxToRenderPerBatch={8} // Reduce number in each render batch
                 updateCellsBatchingPeriod={100} // Increase time between renders
-                windowSize={7} // Reduce the window size
-                refreshControl={
-                  <RefreshControl
-                    refreshing={refresh}
-                    onRefresh={AtualizarLista}
-                  />
-                }
+                windowSize={20} // Reduce the window size
               />
             </View>
           </View>
