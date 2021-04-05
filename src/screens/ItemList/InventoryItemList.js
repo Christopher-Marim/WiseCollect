@@ -21,6 +21,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 
 import getRealm from '../../services/realm';
 import styles from'./styles'
+import Filter from '../Modais Inventory/FilterInventory';
 
 export default function ItemList(props) {
   const refresh = useSelector((state) => state.inventorys.refresh);
@@ -31,6 +32,9 @@ export default function ItemList(props) {
   const [auxNome, setAuxNome] = useState('');
   const [qtdProduto, setQtdProduto] = useState('1');
   const [codProduto, setCodProduto] = useState(coleta ? coleta : '');
+  const statusModal = useSelector(
+    (state) => state.showModal.showModalFILTERINVENTORY,
+  );
 
   const refProduct = useRef(null)
 
@@ -111,20 +115,25 @@ export default function ItemList(props) {
       }
     });
   }
-  async function loadItens() {
+
+  function callBackFilter(textFilter) {
+    loadItens(textFilter);
+  }
+
+  async function loadItens(textFilter ='') {
     const realm = await getRealm();
 
-    let data = realm.objectForPrimaryKey('Inventorys', idInventory);
+    let {nome, itens} = realm.objectForPrimaryKey('Inventorys', idInventory);
 
-    setAuxNome(data.nome);
-    setItens(data.itens);
+
+    
+    setAuxNome(nome);
+    setItens(itens.filtered(`cod CONTAINS[c] "${textFilter}" `));
   }
 
   useEffect(() => {
     loadItens();
     attListInventorys();
-    
-
   }, []);
 
 
@@ -150,6 +159,10 @@ export default function ItemList(props) {
   return (
     <SafeAreaView style={styles.container}>
       <EditItem />
+      
+
+      <Filter callback={callBackFilter} />
+      
       <EllipsisItem navigation={props.navigation} />
 
       <View style={styles.headerView}>
@@ -170,7 +183,7 @@ export default function ItemList(props) {
          style={[styles.text,{maxWidth:300}]}>{auxNome}</Text>
         
 
-        <TouchableOpacity
+        {statusModal == false&&(<TouchableOpacity
           style={styles.buttonOpenEllipsis}
           onPress={() => {
             dispatch({type: 'SHOW_MODAL_ELLIPSIS_ON'});
@@ -181,7 +194,19 @@ export default function ItemList(props) {
               size={25}
               color="white"></FontAwesome>
           </View>
-        </TouchableOpacity>
+        </TouchableOpacity>)}
+        {statusModal == true&&(<TouchableOpacity
+          style={styles.buttonOpenEllipsis}
+          onPress={() => {
+            dispatch({type: 'SHOW_MODAL_FILTER_INVENTORY_OFF'});
+          }}>
+          <View>
+            <FontAwesome
+              name="close"
+              size={30}
+              color="white"></FontAwesome>
+          </View>
+        </TouchableOpacity>)}
       </View>
 
       {/*--------------ColetaManual--------------*/}

@@ -1,4 +1,4 @@
-import {Dimensions, StyleSheet} from 'react-native';
+import { Dimensions, StyleSheet } from 'react-native';
 import commonStyles from '../../commonStyles';
 
 export default StyleSheet.create({
@@ -75,10 +75,19 @@ export default StyleSheet.create({
     borderRadius: 15,
     alignItems: 'center',
     justifyContent: 'center',
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+
+    elevation: 4,
   },
   textEmpresa: {
     fontSize: 15,
     fontWeight: commonStyles.fontWeight,
-    fontFamily:commonStyles.fontFamily
+    fontFamily: commonStyles.fontFamily
   },
 });

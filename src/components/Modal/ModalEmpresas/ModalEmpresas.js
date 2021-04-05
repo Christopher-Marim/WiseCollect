@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 
 import Companys from '../../Companys';
-import api from '../../../services/api'
+import {api} from '../../../services/api'
 import styles from './styles';
 import { ActivityIndicator, Colors } from 'react-native-paper';
 

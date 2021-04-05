@@ -1,19 +1,19 @@
 import commonStyles from '../../commonStyles';
 
-import {StyleSheet, Dimensions} from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
 
 export default StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#e3e3e3',
+    backgroundColor: '#ebebed',
   },
   headerView: {
-    flex: 1,
     flexDirection: 'row',
     paddingHorizontal: 20,
     backgroundColor: commonStyles.color.InventoryPrincipal,
     alignItems: 'center',
     justifyContent: 'space-between',
+    height:Dimensions.get('window').height*0.08
   },
   collectList: {
     padding: 5,
@@ -34,6 +34,15 @@ export default StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: commonStyles.color.InventoryPrincipal,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+
+    elevation: 4,
   },
   addButtonCenter: {
     position: 'absolute',
@@ -43,6 +52,15 @@ export default StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: commonStyles.color.InventoryPrincipal,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+
+    elevation: 4,
   },
   buttonOpenDrawer: {
     padding: 10,

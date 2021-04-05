@@ -93,7 +93,7 @@ export default function EllipsisItem({navigation}) {
             >
               <Text style={styles.TextButton}>Excluir itens</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.Button}>
+            <TouchableOpacity style={styles.Button} onPress={()=>{dispatch({type: 'SHOW_MODAL_FILTER_INVENTORY_ON'}), closeModal()}}>
               <Text style={styles.TextButton}>Filtrar</Text>
             </TouchableOpacity>
             

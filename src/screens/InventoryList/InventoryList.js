@@ -110,7 +110,7 @@ export default function InventoryList({navigation}) {
             }
           }}>
           <View>
-            <FontAwesome name="search" size={25} color="white"></FontAwesome>
+            <FontAwesome name={statusModal?"close":'search'} size={25} color="white"></FontAwesome>
           </View>
         </TouchableOpacity>
       </View>

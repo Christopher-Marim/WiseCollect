@@ -1,15 +1,10 @@
 import React, {useEffect, useRef} from 'react';
 import {useState} from 'react';
 import {
-  Keyboard,
-  Modal,
   StyleSheet,
   TextInput,
-  TouchableWithoutFeedback,
   View,
-  InteractionManager,
   Dimensions,
-  BackHandler
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import commonStyles from '../../commonStyles';
@@ -28,16 +23,21 @@ export default function FilterInventory({callback}) {
     setTimeout(() => inputRef.current.focus(), 150);
     Visible = Dimensions.get('window').width;
   }
-
   function closeModal() {
     dispatch({type: 'SHOW_MODAL_FILTER_INVENTORY_OFF'});
     console.warn('Dale');
   }
 
+ 
+ if(textFilter!='' && statusModal==false){
+   callback('')
+   setTextFilter('')
+ }
+
   return (
     <View
       style={{
-        marginTop: 20,
+        marginTop: 10,
         flex: 18,
         backgroundColor: 'rgba(0,0,0,0.0)',
         alignItems: 'flex-start',
