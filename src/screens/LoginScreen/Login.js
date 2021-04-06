@@ -10,7 +10,7 @@ import {
   Alert,
   Platform,
   Keyboard,
-  Dimensions,
+  Linking,
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import Loader from '../../components/Loader';
@@ -270,8 +270,9 @@ export default function Login({navigation}) {
           }}>
           <Text style={styles.submitText}>Acessar</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.btnSolicit} onPress={() => {}}>
-          <Text style={styles.solicitText}>Configurações</Text>
+        <TouchableOpacity style={styles.btnSolicit} 
+                onPress={() => {Linking.openURL('https://www.etm.srv.br');}}>
+          <Text style={styles.solicitText}>Precisa de ajuda?</Text>
         </TouchableOpacity>
       </Animated.View>
     </KeyboardAvoidingView>

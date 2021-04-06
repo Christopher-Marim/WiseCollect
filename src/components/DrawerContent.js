@@ -1,14 +1,14 @@
-import React, {useEffect, useState} from 'react';
-import {View, StyleSheet, Linking} from 'react-native';
-import {DrawerContentScrollView, DrawerItem} from '@react-navigation/drawer';
-import {Avatar, Title, Caption, Drawer, List} from 'react-native-paper';
+import React, { useEffect, useState } from 'react';
+import { View, StyleSheet, Linking } from 'react-native';
+import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
+import { Avatar, Title, Caption, Drawer, List } from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import commonStyles from '../commonStyles';
 import getRealm from '../services/realm';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useDispatch} from 'react-redux'
+import { useDispatch } from 'react-redux'
 
 
 export default (props) => {
@@ -46,30 +46,30 @@ export default (props) => {
     try {
       const EmpresaNome = await AsyncStorage.getItem('@Empresa')
       setnomeEmpresa(EmpresaNome)
-      
-    } catch(e) {
+
+    } catch (e) {
       console.error(e)
     }
   }
 
   return (
-    <View style={{flex: 1}}>
+    <View style={{ flex: 1 }}>
       <DrawerContentScrollView {...props}>
         <View style={styles.drawerContent}>
-          <TouchableOpacity onPress={()=>{props.navigation.navigate('Profile'); }}>
-          <View style={styles.userInfoSection}>
-            <View style={{flexDirection: 'row'}}>
-              <Avatar.Image
-                source={require('../../assets/icon.png')}
-                size={50}
-              />
-              <View style={{marginLeft: 15, flexDirection: 'column'}}>
-                <Title style={styles.title}>{nome}</Title>
-                <Caption style={styles.email}>{email}</Caption>
-                <Caption style={styles.email}>{nomeEmpresa}</Caption>
+          <TouchableOpacity onPress={() => { props.navigation.navigate('Profile'); }}>
+            <View style={styles.userInfoSection}>
+              <View style={{ flexDirection: 'row' }}>
+                <Avatar.Image
+                  source={require('../../assets/icon.png')}
+                  size={50}
+                />
+                <View style={{ marginLeft: 15, flexDirection: 'column' }}>
+                  <Title style={styles.title}>{nome}</Title>
+                  <Caption style={styles.email}>{email}</Caption>
+                  <Caption style={styles.email}>{nomeEmpresa}</Caption>
+                </View>
               </View>
             </View>
-          </View>
           </TouchableOpacity>
 
           <Drawer.Section style={styles.drawerSection}>
@@ -77,7 +77,7 @@ export default (props) => {
               <List.Item
                 left={() => (
                   <List.Icon
-                    icon={({color, size}) => (
+                    icon={({ color, size }) => (
                       <MaterialCommunityIcons
                         name="newspaper-variant-outline"
                         color={color}
@@ -87,18 +87,18 @@ export default (props) => {
                   />
                 )}
                 title="Notificações"
-                titleStyle={{fontSize: 15}}
+                titleStyle={{ fontSize: 15 }}
                 onPress={() => {
                   props.navigation.navigate('NotificationScreen');
 
                 }}
-                    />
+              />
               <List.Accordion
                 title="Inventário"
                 id="1"
                 left={() => (
                   <List.Icon
-                    icon={({color, size}) => (
+                    icon={({ color, size }) => (
                       <MaterialCommunityIcons
                         name="download-box-outline"
                         color={color}
@@ -109,113 +109,113 @@ export default (props) => {
                 )}>
                 <List.Item
                   title="Coleta Avulsa"
-                  titleStyle={{fontSize: 14}}
+                  titleStyle={{ fontSize: 14 }}
                   onPress={() => {
                     props.navigation.navigate('InventoryList');
                   }}
                 />
                 <List.Item
                   title="Auditoria"
-                  titleStyle={{fontSize: 14}}
+                  titleStyle={{ fontSize: 14 }}
                   onPress={() => {
-                    
+
                   }}
                 />
                 <List.Item
                   title="QR Code"
-                  titleStyle={{fontSize: 14}}
+                  titleStyle={{ fontSize: 14 }}
                   onPress={() => {
-                    
+
                   }}
                 />
               </List.Accordion>
-              {UnitIdEmpresa!=3&&(
-              <View>
+              {UnitIdEmpresa != 3 && (
+                <View>
 
-                <List.Accordion
-                title="Pessoal"
-                titleStyle={{fontSize: 15}}
-                id="2"
-                left={() => (
-                  <List.Icon
-                    icon={({color, size}) => (
-                      <MaterialCommunityIcons
-                        name="account-details-outline"
-                        color={color}
-                        size={size}
+                  <List.Accordion
+                    title="Pessoal"
+                    titleStyle={{ fontSize: 15 }}
+                    id="2"
+                    left={() => (
+                      <List.Icon
+                        icon={({ color, size }) => (
+                          <MaterialCommunityIcons
+                            name="account-details-outline"
+                            color={color}
+                            size={size}
+                          />
+                        )}
                       />
-                    )}
-                  />
-                )}>
-                <List.Item
-                  title="Agenda"
-                  titleStyle={{fontSize: 14}}
-                  onPress={() => {}}
-                />
-                <List.Item
-                  title="Solicitação de HE"
-                  titleStyle={{fontSize: 14}}
-                  onPress={() => {}}
-                />
-              </List.Accordion>
+                    )}>
+                    <List.Item
+                      title="Agenda"
+                      titleStyle={{ fontSize: 14 }}
+                      onPress={() => { }}
+                    />
+                    <List.Item
+                      title="Solicitação de HE"
+                      titleStyle={{ fontSize: 14 }}
+                      onPress={() => { }}
+                    />
+                  </List.Accordion>
 
-<List.Accordion
-                title="Logistica"
-                titleStyle={{fontSize: 15}}
-                id="3"
-                left={() => (
-                  <List.Icon
-                    icon={({color, size}) => (
-                      <MaterialCommunityIcons
-                        name="hard-hat"
-                        color={color}
-                        size={size}
+                  <List.Accordion
+                    title="Logistica"
+                    titleStyle={{ fontSize: 15 }}
+                    id="3"
+                    left={() => (
+                      <List.Icon
+                        icon={({ color, size }) => (
+                          <MaterialCommunityIcons
+                            name="hard-hat"
+                            color={color}
+                            size={size}
+                          />
+                        )}
                       />
-                    )}
-                  />
-                )}>
-                <List.Item
-                  title="Embarques"
-                  titleStyle={{fontSize: 14}}
-                  onPress={() => {}}
-                />
-                <List.Item
-                  title="Requisição de EPI"
-                  titleStyle={{fontSize: 14}}
-                  onPress={() => {}}
-                />
-                <List.Item
-                  title="Treinamento Obrigatórios"
-                  titleStyle={{fontSize: 14}}
-                  onPress={() => {}}
-                />
-              </List.Accordion>
-                
-              </View>
+                    )}>
+                    <List.Item
+                      title="Embarques"
+                      titleStyle={{ fontSize: 14 }}
+                      onPress={() => { }}
+                    />
+                    <List.Item
+                      title="Requisição de EPI"
+                      titleStyle={{ fontSize: 14 }}
+                      onPress={() => { }}
+                    />
+                    <List.Item
+                      title="Treinamento Obrigatórios"
+                      titleStyle={{ fontSize: 14 }}
+                      onPress={() => { }}
+                    />
+                  </List.Accordion>
+
+                </View>
               )}
-              
-              
+
+
               <List.Accordion
                 title="Configurações"
-                titleStyle={{fontSize: 15}}
+                titleStyle={{ fontSize: 15 }}
                 id="4"
                 left={() => (
                   <List.Icon
-                    icon={({color, size}) => (
+                    icon={({ color, size }) => (
                       <FontAwesome name="cog" color={color} size={size} />
                     )}
                   />
                 )}>
                 <List.Item
                   title="Perfil"
-                  titleStyle={{fontSize: 14}}
+                  titleStyle={{ fontSize: 14 }}
                   onPress={() => {
                     props.navigation.navigate('Profile');
                   }}
                 />
                 <List.Item
                   title="API"
-                  titleStyle={{fontSize: 14}}
+                  titleStyle={{ fontSize: 14 }}
                   onPress={() => {
                     props.navigation.navigate('Configs');
                   }}
@@ -224,7 +224,7 @@ export default (props) => {
               <List.Item
                 left={() => (
                   <List.Icon
-                    icon={({color, size}) => (
+                    icon={({ color, size }) => (
                       <MaterialCommunityIcons
                         name="account-check-outline"
                         color={color}
@@ -234,18 +234,18 @@ export default (props) => {
                   />
                 )}
                 title="Suporte ETM"
-                titleStyle={{fontSize: 15}}
-                onPress={() => {Linking.openURL('https://www.etm.srv.br');}}
+                titleStyle={{ fontSize: 15 }}
+                onPress={() => { Linking.openURL('https://www.etm.srv.br'); }}
               />
             </List.AccordionGroup>
 
-            
+
           </Drawer.Section>
         </View>
       </DrawerContentScrollView>
       <Drawer.Section style={styles.bottomDrawerSection}>
         <DrawerItem
-          icon={({color, size}) => (
+          icon={({ color, size }) => (
             <MaterialCommunityIcons
               name="exit-to-app"
               color={color}
@@ -265,6 +265,7 @@ export default (props) => {
 const styles = StyleSheet.create({
   drawerContent: {
     flex: 1,
+    marginTop:-5
   },
   userInfoSection: {
     paddingLeft: 20,

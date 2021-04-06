@@ -44,5 +44,7 @@ export default StyleSheet.create({
   },
   solicitText: {
     color: '#FFF',
+    borderBottomWidth:1,
+    borderColor:'white'
   },
 });

@@ -4,13 +4,13 @@ import {StyleSheet, Dimensions} from 'react-native';
 
 export default StyleSheet.create({
     headerView: {
-        flex: 1,
         flexDirection: 'row',
         paddingLeft: 20,
         paddingRight:10,
         backgroundColor: commonStyles.color.InventoryPrincipal,
         alignItems: 'center',
         justifyContent: 'space-between',
+        height:Dimensions.get('window').height*0.08
       },
       buttonOpenDrawer: {
         padding: 0,
