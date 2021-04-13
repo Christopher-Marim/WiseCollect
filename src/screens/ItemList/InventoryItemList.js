@@ -58,6 +58,7 @@ export default function ItemList(props) {
       dataInventorys.itens.unshift({
         id: Math.random() * 100000,
         cod: store ? store[0].cod : codProduto,
+        idCod: store ? store[0].id : 0,
         qtd: qtdProduto,
         desc: store ? store[0].desc : codProduto,
         value: '',
@@ -103,6 +104,7 @@ export default function ItemList(props) {
             {
               id: element.id,
               desc: store ? store[0].desc : element.desc,
+              idCod: store ? store[0].id : 0,
               info1: store ? store[0].info1 : '',
               info2: store ? store[0].info2 : '',
               info3: store ? store[0].info3 : '',

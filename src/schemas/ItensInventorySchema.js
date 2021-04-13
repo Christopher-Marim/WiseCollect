@@ -3,6 +3,7 @@ export default ItensInventorySchema = {
   primaryKey: 'id',
   properties: {
     id: {type: 'int', indexed: true},
+    idCod: 'int',
     cod: 'string',
     qtd: 'string',
     desc: 'string',

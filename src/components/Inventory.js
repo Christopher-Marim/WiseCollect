@@ -69,13 +69,14 @@ export default function Inventory(props) {
   const forEachCustom = async (idInventory, element) => {
     const response = await api.post(ROTA_ITENS, {
       coletaavulsas_id: idInventory,
+      produtoscoleta_id:element.idCod,
       codproduto: element.cod,
       quantidade: element.qtd,
       system_user_id: User.system_user_id,
       system_unit_id: User.system_unit_id,
     });
     console.log(response.data.data)
-
+    console.log(element)
   }
 
   async function forer(idInventory) {
