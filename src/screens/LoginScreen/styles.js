@@ -21,6 +21,7 @@ export default StyleSheet.create({
   input: {
     backgroundColor: '#FFF',
     width: '90%',
+    height:45,
     marginBottom: 15,
     color: '#222',
     fontSize: 17,
@@ -30,7 +31,7 @@ export default StyleSheet.create({
   btnSubmit: {
     backgroundColor: '#055c82',
     width: '90%',
-    height: 45,
+    height:45,
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 7,

@@ -114,7 +114,7 @@ export default (props) => {
                     props.navigation.navigate('InventoryList');
                   }}
                 />
-                <List.Item
+              {/*  <List.Item
                   title="Auditoria"
                   titleStyle={{ fontSize: 14 }}
                   onPress={() => {
@@ -127,11 +127,11 @@ export default (props) => {
                   onPress={() => {
 
                   }}
-                />
+                /> */}
               </List.Accordion>
               {UnitIdEmpresa != 3 && (
                 <View>
-
+                  {/*
                   <List.Accordion
                     title="Pessoal"
                     titleStyle={{ fontSize: 15 }}
@@ -190,7 +190,7 @@ export default (props) => {
                       onPress={() => { }}
                     />
                   </List.Accordion>
-
+              */}
                 </View>
               )}
 
